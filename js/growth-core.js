@@ -113,6 +113,35 @@
       if(!object(data.preferences)||!['auto','almond','mist','lavender','sage'].includes(data.preferences.palette)) fail('配色偏好无效');
       out.preferences={palette:data.preferences.palette};
     }
+    const botany = typeof module === 'object' && module.exports ? require('./botany-core.js') : globalThis.BotanyCore;
+    if (data.garden != null) out.garden = botany.validate(data.garden);
+    if (data.tarot != null) out.tarot = botany.validateTarot(data.tarot);
+    if (data.extras != null) {
+      const keys = ['fg_settings','fg_leaves','fg_letters','fg_cards','fg_cards_meta','fg_bench','fg_shelves','fg_review_items','fg_promises','fg_whitenoise'];
+      if (!object(data.extras) || Object.keys(data.extras).some(key => !keys.includes(key))) fail('备份扩展字段无效');
+      const check = (value, depth=0) => {
+        if (depth>12) fail('备份扩展层级过深');
+        if (value===null || typeof value==='boolean' || (typeof value==='number' && Number.isFinite(value))) return;
+        if (typeof value==='string' && value.length<=2000000) return;
+        if (Array.isArray(value) && value.length<=20000) { value.forEach(v=>check(v,depth+1)); return; }
+        if (object(value)) { for(const [key,v] of Object.entries(value)){ if(['__proto__','prototype','constructor'].includes(key))fail('备份包含无效字段'); check(v,depth+1); } return; }
+        fail('备份扩展数据无效');
+      };
+      check(data.extras);
+      for(const key of ['fg_leaves','fg_letters','fg_bench','fg_shelves','fg_review_items','fg_promises']) {
+        if(data.extras[key]!=null && (!Array.isArray(data.extras[key]) || data.extras[key].some(v=>!object(v)||typeof v.id!=='string')))fail('备份列表无效：'+key);
+      }
+      for(const key of ['fg_settings','fg_cards','fg_cards_meta','fg_whitenoise'])if(data.extras[key]!=null&&!object(data.extras[key]))fail('备份设置无效：'+key);
+      if(data.extras.fg_cards && !Array.isArray(data.extras.fg_cards.items))fail('装扮卡册无效');
+      if(data.extras.fg_cards && data.extras.fg_cards.items.some(c=>!object(c)||typeof c.id!=='string'||typeof c.assetId!=='string'||typeof c.name!=='string'||!['common','fine','season'].includes(c.rarity)))fail('装扮卡片无效');
+      const meta=data.extras.fg_cards_meta;
+      if(meta && ['energy','chances'].some(k=>!Number.isSafeInteger(meta[k])||meta[k]<0))fail('装扮计数无效');
+      const image=value=>typeof value==='string'&&/^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(value);
+      if(meta?.drawBg && (!Array.isArray(meta.drawBg.pool)||meta.drawBg.pool.some(v=>!image(v))))fail('抽取背景无效');
+      if(data.extras.fg_bench?.some(c=>!['text','image'].includes(c.type)||(c.type==='text'&&typeof c.text!=='string')||(c.type==='image'&&!image(c.img))))fail('工作台碎片无效');
+      if(data.extras.fg_shelves?.some(c=>typeof c.title!=='string'||(c.cover?.kind==='img'&&!image(c.cover.value))))fail('书架记录无效');
+      out.extras=data.extras;
+    }
     return JSON.parse(JSON.stringify(out));
   }
   return {dateKey,validDate,shiftDate,dailyStats,history,garden,moodPlan,normalizeBackup};

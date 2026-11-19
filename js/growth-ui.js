@@ -5,6 +5,8 @@ function growthData() {
 }
 const GARDEN_NAMES = ['种子静候','新芽初生','绿叶舒展','花朵绽放','花园繁盛'];
 const GARDEN_THRESHOLDS = [0,20,60,120,220];
+let lastGrowthEnergy = null;
+let demoStage = null; // 试用展示态：仅影响花园显示，不写入任何真实数据
 function plantSVG(stage, prefix = 'plant') {
   const leaf = (x,y,angle,size,color) => `<g transform="translate(${x} ${y}) rotate(${angle}) scale(${size})"><path d="M0 0C-32-17-32-51-8-66C20-62 27-27 0 0Z" fill="${color}"/><path d="M0 0Q-6-27-8-56" stroke="#e0e7ba" stroke-opacity=".55" stroke-width="1.4"/><path d="M-3-17-16-26M-5-31 5-43" stroke="#e0e7ba" stroke-opacity=".26" stroke-width="1"/></g>`;
   const flower = (x,y,size=1) => `<g transform="translate(${x} ${y}) scale(${size})">${Array.from({length:8},(_,i)=>`<ellipse cy="-15" rx="9" ry="18" transform="rotate(${i*45})" fill="${i%2?'#e9b7a3':'#f3cbbb'}" stroke="#d89d87" stroke-width=".6"/>`).join('')}<circle r="11" fill="#b18a4c"/><circle r="8" fill="#e5c47e"/><g fill="#ae8a49"><circle cy="-4" r="1"/><circle cx="4" r="1"/><circle cx="-3" cy="3" r="1"/><circle cx="2" cy="4" r="1"/></g></g>`;
@@ -36,7 +38,13 @@ function renderGrowth() {
   const host = $('growthSummary');
   if (!host) return;
   const data = growthData(), key = todayKey();
-  const daily = GardenCore.dailyStats(data,key), g = GardenCore.garden(data,key);
+  const daily = GardenCore.dailyStats(data,key);
+  // 试用：看下一阶段（仅展示态，不改真实能量；真实数据到达后自动回归）
+  const real = GardenCore.garden(data,key);
+  const g = demoStage !== null && demoStage > real.stage
+    ? { ...real, stage: demoStage, energy: GARDEN_THRESHOLDS[demoStage], next: GARDEN_THRESHOLDS[demoStage + 1] ?? null }
+    : real;
+  if (demoStage !== null && demoStage <= real.stage) demoStage = null; // 真实成长追上后自动收回
   const list = tasks.filter(t=>occursOn(t,key));
   const done = list.filter(t=>doneOn(t,key)).length;
   const percentage = list.length ? Math.round(done/list.length*100) : 0;
@@ -49,10 +57,27 @@ function renderGrowth() {
   for (const [id,prefix] of [['gardenPlant','preview'],['gardenDetailPlant','detail']]) {
     const plant = $(id);
     if (plant.dataset.stage !== String(g.stage)) {
+      const upgraded = plant.dataset.stage !== '' && plant.dataset.stage !== undefined;
       plant.innerHTML = plantSVG(g.stage,prefix);
       plant.dataset.stage = String(g.stage);
+      if (upgraded) {
+        plant.classList.remove('stage-grown');
+        void plant.offsetWidth;
+        plant.classList.add('stage-grown');
+        setTimeout(()=>plant.classList.remove('stage-grown'), 1100);
+      }
     }
   }
+  if (lastGrowthEnergy !== null && daily.energy > lastGrowthEnergy) {
+    for (const el of [document.querySelector('.garden-window'), document.querySelector('.garden-scene')]) {
+      if (!el) continue;
+      el.classList.remove('energy-glow');
+      void el.offsetWidth;
+      el.classList.add('energy-glow');
+      setTimeout(()=>el.classList.remove('energy-glow'), 1300);
+    }
+  }
+  lastGrowthEnergy = daily.energy;
   $('gardenStage').textContent = GARDEN_NAMES[g.stage];
   $('gardenLevel').textContent = `阶段 ${g.stage+1} / 5`;
   const start=GARDEN_THRESHOLDS[g.stage];
@@ -73,12 +98,38 @@ function renderGrowth() {
   $('todayIntention').textContent = daylines.find(d=>d.date===key)?.text?.trim() || '不必一下子开花，慢慢来，也很好。';
   renderGardenJourney(g.stage);
   renderGardenActivity(key);
+  if (typeof renderGardenStones === 'function') renderGardenStones();
+  // 试用：看下一阶段（体验引导，不写入真实能量，刷新即回归真实阶段）
+  const side = document.querySelector('.garden-journal');
+  if (side && !$('demoStageBtn')) {
+    const row = document.createElement('div');
+    row.className = 'demo-stage-row';
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'quiet-link'; btn.id = 'demoStageBtn';
+    btn.textContent = '试用：看下一阶段';
+    btn.title = '体验引导：临时预览下一阶段的花园，不改变真实数据';
+    btn.addEventListener('click', () => {
+      const real = GardenCore.garden(growthData(), todayKey());
+      if (real.stage >= GARDEN_NAMES.length - 1) { showToast('花园已经繁盛，每一份努力都留下了痕迹'); return; }
+      demoStage = real.stage + 1;
+      renderGrowth();
+      showToast('试用预览 · 这一阶段只是先看看，真实数据没有变');
+    });
+    const tag = document.createElement('small');
+    tag.className = 'demo-stage-tag'; tag.textContent = '试用';
+    row.append(btn, tag);
+    const note = side.querySelector('.garden-gentle-note');
+    note ? side.insertBefore(row, note) : side.appendChild(row);
+  }
+  const demoTag = $('demoStageBtn')?.parentElement?.querySelector('.demo-stage-tag');
+  if (demoTag) demoTag.hidden = demoStage === null;
   renderFocusContext();
   const greeting = new Date().getHours()<12 ? '早上好' : new Date().getHours()<18 ? '下午好' : '晚上好';
   $('todayGreeting').textContent = `${greeting}，今天也慢慢来。`;
   renderMiniCalendar();
   renderGrowthHistory();
   if(typeof renderRhythm==='function') renderRhythm();
+  if(window.BotanyUI) window.BotanyUI.sync();
 }
 function renderGardenJourney(stage) {
   const host = $('gardenJourney');
@@ -147,7 +198,8 @@ function renderGrowthHistory() {
   const completed=days.reduce((n,d)=>n+d.completed,0), minutes=Math.floor(days.reduce((n,d)=>n+d.focusMs,0)/60000);
   $('reviewSummary').textContent=`${start} — ${end}：完成 ${completed} 项任务，投入 ${minutes} 分钟专注，留下 ${moodList.filter(m=>m.date>=start&&m.date<=end&&m.mood!=null).length} 天心情和 ${photosCache.filter(p=>p.date>=start&&p.date<=end).length} 张照片。`;
 }
-function openGardenDetail() {
+function openGardenDetail() { location.hash = "garden"; }
+function openGardenRoom() {
   renderGrowth();
   $('gardenDialog').showModal();
 }
@@ -181,3 +233,205 @@ const growthObserver = new MutationObserver(() => {
 });
 ['todayTasks','moodRow','daylineInput','wallGrid'].forEach(id=>growthObserver.observe($(id),{childList:true,subtree:true}));
 setTimeout(renderGrowth,0);
+
+/* ================= 花园摆件：感恩瓶 / 时光瓶 / 静石 + 点植物柔光 ================= */
+(function(){
+  const glow=(el)=>{ if(!el)return; el.classList.remove('glowing'); void el.offsetWidth; el.classList.add('glowing'); };
+  // 感恩瓶：与情绪空间的罐子联动（fg_jar）
+  $('ornJar').addEventListener('click',()=>{
+    const btn=$('ornJar'); glow(btn);
+    let jar=[]; try{ jar=JSON.parse(localStorage.getItem('fg_jar'))||[]; }catch(e){}
+    openOverlay((card,close)=>{
+      const t=document.createElement('div'); t.className='ov-title'; t.textContent='感恩瓶 · 收着你的小确幸';
+      const hint=document.createElement('p'); hint.className='leaf-dialog-hint';
+      hint.textContent='每天记下的小事都自动落进瓶子里（和情绪空间的罐子是同一处）。'; 
+      const list=document.createElement('div'); list.className='ov-card-list';
+      const items=jar.slice(-30).reverse();
+      if(!items.length){ const p=document.createElement('p'); p.className='leaf-dialog-hint'; p.textContent='瓶子里还空着。今天有什么小事值得谢谢自己吗？'; list.appendChild(p); }
+      items.forEach(j=>{ const row=document.createElement('div'); row.className='ov-card-row';
+        const p=document.createElement('p'); p.textContent=j.text||''; 
+        const s=document.createElement('small'); s.className='note-meta'; s.textContent=typeof dayKey==='function'&&j.createdAt?dayKey(j.createdAt):'';
+        row.appendChild(p); row.appendChild(s); list.appendChild(row); });
+      const act=document.createElement('div'); act.className='ov-actions';
+      const back=document.createElement('button'); back.className='soft-btn mini'; back.textContent='轻轻合上'; back.addEventListener('click',close);
+      act.appendChild(back);
+      card.appendChild(t); card.appendChild(hint); card.appendChild(list); card.appendChild(act);
+    });
+  });
+  // 时光瓶：打开记忆卡牌册（花苞与绽放的信都在里面）
+  $('ornTime').addEventListener('click',()=>{
+    glow($('ornTime'));
+    const link=$('budAlbumLink');
+    if(link) link.click(); else showToast('时光瓶里还没有信。写一封给未来的自己吧');
+  });
+  // 静石：指向「先放一放」的目标区
+  $('ornStone').addEventListener('click',()=>{
+    glow($('ornStone'));
+    const sec=document.querySelector('.garden-stones');
+    if(sec&&!sec.hidden){ sec.scrollIntoView({behavior:'smooth',block:'center'}); }
+    else showToast('花园里还没有静石。目标想放一放的时候，会变成石头留在这里');
+  });
+  // 点植物柔光提亮（点空白处的柔光涟漪由全局跟手涟漪负责）
+  const plant=$('gardenDetailPlant');
+  if(plant) plant.addEventListener('click',()=>{
+    plant.classList.remove('plant-glow'); void plant.offsetWidth; plant.classList.add('plant-glow');
+  });
+})();
+
+/* ================= 花园白噪音：程序化声景，无外部音频文件 ================= */
+(function(){
+  const btn=$('ornSound'); if(!btn) return;
+  const KEY='fg_whitenoise';
+  const TYPES=[{id:'rain',name:'细雨'},{id:'stream',name:'溪水'},{id:'wind',name:'晚风'},{id:'fire',name:'篝火'}];
+  const MASTER=0.55;
+  let cfg={type:'rain',vol:0.35};
+  try{ cfg=Object.assign(cfg,JSON.parse(localStorage.getItem(KEY))||{}); }catch(e){}
+  if(!TYPES.some(t=>t.id===cfg.type)) cfg.type='rain';
+  if(typeof cfg.vol!=='number'||!isFinite(cfg.vol)) cfg.vol=0.35;
+  cfg.vol=Math.min(1,Math.max(0,cfg.vol));
+  const save=()=>{ try{ localStorage.setItem(KEY,JSON.stringify(cfg)); }catch(e){} };
+
+  let ctx=null,master=null,chain=[],buffer=null,playing=false,killTimer=null;
+
+  function ensure(){
+    if(!ctx){
+      ctx=new (window.AudioContext||window.webkitAudioContext)();
+      master=ctx.createGain(); master.gain.value=0; master.connect(ctx.destination);
+    }
+    if(ctx.state==='suspended') ctx.resume();
+    return ctx;
+  }
+  function noise(){
+    if(buffer&&buffer.sampleRate===ctx.sampleRate) return buffer;
+    const len=Math.floor(ctx.sampleRate*3);
+    buffer=ctx.createBuffer(1,len,ctx.sampleRate);
+    const d=buffer.getChannelData(0);
+    for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+    return buffer;
+  }
+  function layer(filters,gainVal){
+    const src=ctx.createBufferSource(); src.buffer=noise(); src.loop=true;
+    const made=[src]; let node=src;
+    filters.forEach(f=>{
+      const b=ctx.createBiquadFilter(); b.type=f.type; b.frequency.value=f.freq;
+      if(f.q!=null) b.Q.value=f.q;
+      node.connect(b); node=b; made.push(b);
+    });
+    const g=ctx.createGain(); g.gain.value=gainVal;
+    node.connect(g); g.connect(master); made.push(g);
+    return {made,gain:g};
+  }
+  // 缓慢起伏的 LFO：让溪水和晚风有呼吸感，而不是一条死线
+  function drift(param,freq,depth,base){
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sine'; o.frequency.value=freq; g.gain.value=depth;
+    param.value=base; o.connect(g).connect(param); o.start();
+    return [o,g];
+  }
+  function build(){
+    const parts=[];
+    if(cfg.type==='rain'){
+      parts.push(layer([{type:'highpass',freq:700},{type:'lowpass',freq:7500}],.16));
+      parts.push(layer([{type:'lowpass',freq:420}],.10));
+    }else if(cfg.type==='stream'){
+      const a=layer([{type:'bandpass',freq:880,q:.8}],.20);
+      a.made.push(...drift(a.gain.gain,.13,.06,.20));
+      parts.push(a);
+      parts.push(layer([{type:'lowpass',freq:260}],.10));
+    }else if(cfg.type==='wind'){
+      const a=layer([{type:'lowpass',freq:460,q:.9}],.26);
+      a.made.push(...drift(a.gain.gain,.055,.10,.26));
+      parts.push(a);
+    }else{
+      parts.push(layer([{type:'bandpass',freq:320,q:.5}],.22));
+      parts.push(layer([{type:'highpass',freq:2600}],.015));
+    }
+    chain=parts;
+  }
+  function teardown(fade){
+    if(killTimer){ clearTimeout(killTimer); killTimer=null; }
+    const old=chain; chain=[];
+    const kill=()=>old.forEach(p=>p.made.forEach(n=>{
+      if(n.stop){ try{ n.stop(); }catch(e){} }
+      try{ n.disconnect(); }catch(e){}
+    }));
+    if(!ctx) return;
+    if(fade>0){
+      const t=ctx.currentTime;
+      master.gain.cancelScheduledValues(t);
+      master.gain.setValueAtTime(Math.max(master.gain.value,.0001),t);
+      master.gain.exponentialRampToValueAtTime(.0001,t+fade);
+      killTimer=setTimeout(kill,fade*1000+80);
+    }else kill();
+  }
+  function stamp(){
+    btn.classList.toggle('sound-on',playing);
+    btn.setAttribute('aria-pressed',playing?'true':'false');
+  }
+  function start(){
+    try{
+      ensure(); teardown(0); build();
+      const t=ctx.currentTime;
+      master.gain.cancelScheduledValues(t);
+      master.gain.setValueAtTime(.0001,t);
+      master.gain.exponentialRampToValueAtTime(Math.max(.0001,cfg.vol*MASTER),t+1.2);
+      playing=true; stamp();
+    }catch(e){ showToast('这个浏览器暂时放不出声音'); }
+  }
+  function stop(){
+    if(!playing&&!chain.length) return;
+    teardown(.9); playing=false; stamp();
+  }
+  function volume(){
+    if(!ctx||!playing) return;
+    const t=ctx.currentTime;
+    master.gain.cancelScheduledValues(t);
+    master.gain.setTargetAtTime(Math.max(.0001,cfg.vol*MASTER),t,.12);
+  }
+
+  btn.addEventListener('click',()=>{
+    btn.classList.remove('glowing'); void btn.offsetWidth; btn.classList.add('glowing');
+    openOverlay((card,close)=>{
+      const t=document.createElement('div'); t.className='ov-title'; t.textContent='花园白噪音 · 陪你安静一会儿';
+      const hint=document.createElement('p'); hint.className='leaf-dialog-hint';
+      hint.textContent='雨、溪水、晚风或篝火，选一种陪着你。离开花园时会自动安静下来。';
+      const chips=document.createElement('div'); chips.className='wn-chips'; chips.setAttribute('role','group'); chips.setAttribute('aria-label','声音类型');
+      const map={};
+      TYPES.forEach(tp=>{
+        const c=document.createElement('button'); c.type='button';
+        c.className='wn-chip'+(cfg.type===tp.id?' active':'');
+        c.setAttribute('aria-pressed',cfg.type===tp.id?'true':'false');
+        c.textContent=tp.name;
+        c.addEventListener('click',()=>{
+          cfg.type=tp.id; save();
+          Object.keys(map).forEach(k=>{ map[k].classList.toggle('active',k===tp.id); map[k].setAttribute('aria-pressed',k===tp.id?'true':'false'); });
+          if(playing) start();
+        });
+        map[tp.id]=c; chips.appendChild(c);
+      });
+      const row=document.createElement('label'); row.className='wn-row';
+      const lab=document.createElement('span'); lab.textContent='音量';
+      const range=document.createElement('input'); range.type='range'; range.min='0'; range.max='100'; range.step='1';
+      range.value=String(Math.round(cfg.vol*100)); range.setAttribute('aria-label','白噪音音量');
+      const out=document.createElement('output'); out.textContent=range.value+'%';
+      range.addEventListener('input',()=>{
+        cfg.vol=Number(range.value)/100; save(); out.textContent=range.value+'%'; volume();
+      });
+      row.appendChild(lab); row.appendChild(range); row.appendChild(out);
+      const act=document.createElement('div'); act.className='ov-actions';
+      const play=document.createElement('button'); play.type='button'; play.className='soft-btn';
+      const label=()=>{ play.textContent=playing?'先安静下来':'听听看'; };
+      label();
+      play.addEventListener('click',()=>{ if(playing) stop(); else start(); label(); });
+      const back=document.createElement('button'); back.type='button'; back.className='quiet-link'; back.textContent='合上';
+      back.addEventListener('click',close);
+      act.appendChild(play); act.appendChild(back);
+      card.appendChild(t); card.appendChild(hint); card.appendChild(chips); card.appendChild(row); card.appendChild(act);
+    });
+  });
+
+  // 离开花园就安静，不把声音带到别处
+  const gd=$('gardenDialog');
+  if(gd) gd.addEventListener('close',()=>{ if(playing) stop(); });
+  stamp();
+})();

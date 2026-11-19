@@ -6,10 +6,11 @@
 <title>Focus Garden · 安静的备考花园</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#faf5ef">
-<script src="js/palette.js?v=1"></script>
-<link rel="stylesheet" href="style.css?v=67">
-<link rel="stylesheet" href="garden.css?v=2">
-<link rel="stylesheet" href="scenes.css?v=2">
+<script src="js/palette.js?v=20261119"></script>
+<link rel="stylesheet" href="style.css?v=20261119">
+<link rel="stylesheet" href="garden.css?v=20261119">
+<link rel="stylesheet" href="scenes.css?v=20261119">
+<link rel="stylesheet" href="botany.css?v=20261119">
 </head>
 <body>
 
@@ -20,7 +21,10 @@
   <button class="nav-item" data-section="today"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="16" rx="3"/><path d="M8 3v3M16 3v3M3.5 9.5h17M9 14.5l2.2 2.2 4-4.4"/></svg>今日</button>
   <button class="nav-item" data-section="calendar"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="16" rx="3"/><path d="M8 3v3M16 3v3M3.5 9.5h17M7.5 13.5h3M13.5 13.5h3M7.5 17h3"/></svg>日历</button>
   <button class="nav-item" data-section="tasks"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 5.5l1.4 1.4L8 4.2M4 11.5l1.4 1.4L8 10.2M4 17.5l1.4 1.4L8 16.2"/></svg>任务</button>
+  <button class="nav-item" data-section="garden"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V9M12 12C5 12 4 7 5 4c5-1 8 2 7 8ZM12 9c0-5 4-7 8-6 0 5-3 7-8 6ZM5 16h14l-2 6H7z"/></svg>花园</button>
+  <button class="nav-item" data-section="tarot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="m12 7 2 4 3 1-3 1-2 4-2-4-3-1 3-1z"/></svg>每日塔罗</button>
   <button class="nav-item" data-section="tools"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 3.5v4M12 16.5v4M3.5 12h4M16.5 12h4"/></svg>功能</button>
+  <button class="nav-item" data-section="bench"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5h17M4.5 12.5v7a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-7M2.5 9.5h19l-1.6-4.4A1.5 1.5 0 0 0 18.5 4h-13a1.5 1.5 0 0 0-1.4 1.1L2.5 9.5Z"/><path d="M9.5 16.5h5"/></svg>工作台</button>
   <button class="nav-item" data-section="notes"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5v15a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5z"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>思绪整理</button>
   <button class="nav-item" data-section="space"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.7 4.3L18 10l-4.3 1.7L12 16l-1.7-4.3L6 10l4.3-1.7z"/><path d="M18.5 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>情绪空间</button>
   <div class="nav-foot"><span class="nav-leaf">❀</span><p>不必很快，<br>每一天都算数。</p><small>GROW AT YOUR OWN PACE</small></div>
@@ -28,14 +32,14 @@
 
 <!-- 右侧内容区 -->
 <main class="content" id="content">
-  <div class="workspace-bar"><span id="pageLocation">我的花园 / 今日</span><div class="workspace-actions"><button class="palette-trigger" id="appearanceBtn" aria-haspopup="dialog"><span class="palette-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>换个颜色</span></button><button class="quiet-link" id="quickNote">写下此刻 <span aria-hidden="true">↗</span></button></div></div>
+  <div class="workspace-bar"><span id="pageLocation">我的花园 / 今日</span><div class="workspace-actions"><button class="palette-trigger" id="appearanceBtn" aria-haspopup="dialog"><span class="palette-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>设置</span></button><button class="quiet-link" id="quickNote">写下此刻 <span aria-hidden="true">↗</span></button></div></div>
 
   <!-- 今日 -->
   <section class="panel" id="sec-today">
-    <header class="today-heading"><div class="today-heading-copy"><span id="welcomeDate" class="welcome-date"></span><h1 id="todayGreeting">今天也慢慢来。</h1><p>把一件小事做好，让日子和花园一起生长。</p><div class="today-hero-actions"><button class="soft-btn" id="heroFocusLink">开始一段专注 <span aria-hidden="true">↗</span></button><button class="quiet-link" id="heroGardenLink">去花园坐坐 <span aria-hidden="true">→</span></button></div></div><aside class="today-intention"><span class="eyebrow">A LITTLE NOTE FOR TODAY</span><p id="todayIntention">不必一下子开花，慢慢来，也很好。</p><span class="intention-line" aria-hidden="true"></span><small>给今天留一句话</small><button class="intention-edit" id="editIntention" aria-label="编辑今日一句">↗</button></aside></header>
+    <header class="today-heading"><div class="today-heading-copy"><span id="welcomeDate" class="welcome-date"></span><h1 id="todayGreeting">今天也慢慢来。</h1><p>挑一件小事，现在就开始，让日子和花园一起生长。</p><div class="today-hero-actions"><button class="soft-btn" id="heroFocusLink">开始一段专注 <span aria-hidden="true">↗</span></button><button class="quiet-link" id="heroGardenLink">去花园坐坐 <span aria-hidden="true">→</span></button></div></div><aside class="today-intention"><span class="eyebrow">A LITTLE NOTE FOR TODAY</span><p id="todayIntention">不必一下子开花，慢慢来，也很好。</p><span class="intention-line" aria-hidden="true"></span><small>给今天留一句话</small><button class="intention-edit" id="editIntention" aria-label="编辑今日一句">↗</button></aside></header>
     <section class="growth-summary" id="growthSummary" aria-label="今日成长进度">
       <div class="growth-main"><div class="growth-heading"><h2>今日完成</h2><strong id="growthPercent">0%</strong></div><progress id="growthProgress" max="100" value="0" aria-label="今日任务完成率"></progress><p id="growthCount">完成 0 / 0 项计划</p></div>
-      <div class="growth-metric"><span>今日专注</span><strong id="growthFocus">0 分钟</strong><small>把时间留给重要的事</small></div><div class="growth-metric"><span>成长足迹</span><strong id="growthDays">0 天</strong><small>一点一滴，都是积累</small></div>
+      <div class="growth-metric metric-focus"><span>今日专注</span><strong id="growthFocus">0 分钟</strong><small>把时间留给重要的事</small></div><div class="growth-metric metric-foot"><span>成长足迹</span><strong id="growthDays">0 天</strong><small>一点一滴，都是积累</small></div>
     </section>
     <section class="rhythm-card" id="rhythmCard" aria-labelledby="rhythmTitle">
       <div class="rhythm-art" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="69" cy="29" r="13"/><path d="M12 83V57a31 31 0 0 1 62 0v26M23 83V58a20 20 0 0 1 40 0v25M34 83V59a9 9 0 0 1 18 0v24"/><path d="M8 84h78"/></svg></div>
@@ -72,10 +76,26 @@
       </div>
     </div>
     </div><aside class="today-side">
-      <section class="garden-preview" aria-label="我的成长花园"><div class="card-heading"><div><p class="eyebrow">YOUR EFFORT, TAKING ROOT</p><h2>我的一方小花园</h2></div><button class="quiet-link" id="viewGarden" aria-label="看看我的花园">走进去 ↗</button></div><div class="garden-window"><img src="assets/botanical-room.svg" alt="" class="room-scenery"><div id="gardenPlant" class="garden-plant"></div><span class="window-label">THE GROWING ROOM</span></div><div class="garden-caption"><div class="garden-stage-line"><h3 id="gardenStage">种子静候</h3><span id="gardenLevel">阶段 1 / 5</span></div><p id="growthEnergy">今天收获 0 点成长能量</p><progress id="gardenStageProgress" max="20" value="0" aria-label="当前植物阶段成长进度"></progress><p id="gardenEnergy"></p><p class="garden-rest" id="gardenNextAction">从完成一件小事开始。</p><button class="quiet-link garden-focus-link" id="todayFocusLink">为它留一段专注的时间 →</button></div></section>
+      <section class="garden-preview" aria-label="我的成长花园"><div class="card-heading"><div><p class="eyebrow">YOUR EFFORT, TAKING ROOT</p><h2>我的一方小花园</h2></div><button class="quiet-link" id="viewGarden" aria-label="看看我的花园">走进去 ↗</button></div><div class="garden-window"><img src="assets/botanical-room.svg" alt="" class="room-scenery"><div id="gardenPlant" class="garden-plant"></div><span class="window-label">THE GROWING ROOM</span></div><div class="garden-caption"><div class="garden-stage-line"><h3 id="gardenStage">种子静候</h3><span id="gardenLevel">阶段 1 / 5</span></div><p id="growthEnergy">今天收获 0 点成长能量</p><progress id="gardenStageProgress" max="20" value="0" aria-label="当前植物阶段成长进度"></progress><p id="gardenEnergy"></p><p class="garden-rest" id="gardenNextAction">从完成一件小事开始。</p><button class="quiet-link garden-focus-link" id="todayFocusLink">为它留一段专注的时间 →</button><button class="quiet-link garden-hint-link" id="gardenHintLink">花园里有一条溪流和几颗花苞 →</button></div></section>
       <section class="mini-calendar-card"><div class="card-heading"><h2 id="miniMonthTitle">这个月</h2><button class="quiet-link" id="miniCalendarLink" aria-label="打开完整日历">↗</button></div><div class="mini-weekdays" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div id="miniMonth" class="mini-month" aria-label="本月日期"></div></section>
     </aside></div>
   </section>
+
+  <section class="panel botany-page" id="sec-garden" aria-labelledby="botanyTitle">
+    <header class="botany-heading"><div><p class="eyebrow">YOUR EFFORT, IN BLOOM</p><h1 id="botanyTitle">把努力，种成一座花园。</h1><p>一件小事，一点养分。每一次盛放，都有新的相遇。</p></div><div class="botany-header-actions"><button class="soft-btn ghost" id="gardenCustomize">＋ 自定义植物</button><button class="soft-btn" id="gardenShare">分享花园 ↗</button></div></header>
+    <div id="gardenError" class="garden-error" role="alert" hidden></div>
+    <div class="garden-wallet" aria-label="花园资产"><div><span class="wallet-mark">✧</span><span>可用养分<strong id="walletEnergy">0</strong></span></div><div><span class="wallet-mark">▱</span><span>抽卡券<strong id="walletTickets">0</strong></span></div><div><span class="wallet-mark">◇</span><span>星光碎片<strong id="walletShards">0</strong></span></div><div><span class="wallet-mark">❀</span><span>收集 / 盛放<strong id="walletCollection">0 / 0</strong></span></div></div>
+    <div class="garden-tabs" role="tablist" aria-label="花园功能"><button id="gardenTab-grow" role="tab" aria-controls="gardenPane-grow" aria-selected="true" data-garden-tab="grow">我的花园</button><button id="gardenTab-shop" role="tab" aria-controls="gardenPane-shop" aria-selected="false" data-garden-tab="shop" tabindex="-1">种子小铺</button><button id="gardenTab-collection" role="tab" aria-controls="gardenPane-collection" aria-selected="false" data-garden-tab="collection" tabindex="-1">植物图鉴</button><button id="gardenTab-exchange" role="tab" aria-controls="gardenPane-exchange" aria-selected="false" data-garden-tab="exchange" tabindex="-1">碎片兑换</button></div>
+    <div id="gardenPane-grow" role="tabpanel" aria-labelledby="gardenTab-grow">
+      <div class="cultivation-layout"><section class="living-garden" id="livingGarden" aria-label="我的种植空间"><div class="landscape" id="livingLandscape" aria-hidden="true"></div><div class="living-heading"><div><span class="eyebrow">MY LITTLE SANCTUARY</span><h2 id="livingName">慢慢花园</h2><button id="gardenRename" class="quiet-link">给花园起个名字 ↗</button></div><label class="scene-select-label">光景<select id="gardenScene" aria-label="选择花园光景"><option value="morning">清晨</option><option value="sunset">日落</option><option value="moon">月夜</option></select></label></div><div id="gardenPlots" class="garden-plots"></div><span class="garden-scene-note">每一片新叶，都来自认真生活的你。</span></section><aside class="plant-journal" id="plantJournal" aria-live="polite"></aside></div>
+      <section class="garden-route"><div><span>01</span><strong>完成任务</strong><small>积攒真实行动的养分</small></div><i aria-hidden="true">→</i><div><span>02</span><strong>照料开花</strong><small>收下盛放赠送的抽卡券</small></div><i aria-hidden="true">→</i><div><span>03</span><strong>遇见新植物</strong><small>重复植物变成星光碎片</small></div></section>
+      <div class="garden-bottom"><section class="garden-note-card"><span class="eyebrow">LITTLE STEPS COUNT</span><h3>今天，也在生长。</h3><p id="gardenDailyNote"></p><div class="botany-inline-actions"><button class="quiet-link" id="gardenToTasks">去完成一件小事 ↗</button><button class="quiet-link" id="gardenToFocus">开始专注 ↗</button></div></section><section class="garden-note-card"><span class="eyebrow">A GARDEN AT YOUR PACE</span><h3>休息时，花园也会等你。</h3><p>植物不会因为离开而枯萎。养分永久保留，已经开花的植物可以留在花圃里欣赏。</p><button class="quiet-link" id="gardenRules">查看养成与抽取规则 ↗</button></section></div>
+    </div>
+    <div id="gardenPane-shop" role="tabpanel" aria-labelledby="gardenTab-shop" hidden><section class="seed-shop"><div class="seed-copy"><span class="eyebrow">THE SEED POST OFFICE</span><h2>下一株，会是什么颜色？</h2><p>用盛放换来的小小花券，拆开一份来自花园的惊喜。</p><div class="pity-notes"><span id="pityRare"></span><span id="pityLegend"></span></div><div class="botany-inline-actions"><button class="soft-btn" id="drawOne">遇见一株 · 1 券</button><button class="soft-btn ghost" id="drawFive">相遇五次 · 5 券</button></div><p class="seed-gift-note">初次来到花园，赠送小雏菊与 3 张花券。</p><button class="quiet-link" id="shopRules">概率、保底与重复兑换 ↗</button></div><div class="seed-window" id="seedWindow" aria-hidden="true"></div></section><section class="garden-note-card draw-history"><div class="collection-heading"><h3>相遇记录</h3><span>最近 60 次，保底跨天保留</span></div><ol id="drawHistory"></ol></section></div>
+    <div id="gardenPane-collection" role="tabpanel" aria-labelledby="gardenTab-collection" hidden><div class="collection-heading"><div><h2>一页一页，收集四季。</h2><p id="collectionCount"></p></div><label>筛选<select id="collectionFilter"><option value="all">全部植物</option><option value="owned">已收集</option><option value="N">N · 日常</option><option value="R">R · 稀有</option><option value="SR">SR · 珍稀</option><option value="SSR">SSR · 典藏</option><option value="CUSTOM">自定义</option></select></label></div><div id="collectionGrid" class="plant-collection"></div></div>
+    <div id="gardenPane-exchange" role="tabpanel" aria-labelledby="gardenTab-exchange" hidden><div class="collection-heading"><div><h2>把偶遇，变成心之所向。</h2><p>重复植物自动变成碎片，慢慢攒，也能换到喜欢的那一株。</p></div></div><div id="exchangeGrid" class="plant-collection"></div></div>
+  </section>
+  <section class="panel tarot-page" id="sec-tarot" aria-labelledby="tarotTitle"><div class="tarot-layout"><header class="tarot-intro"><span class="eyebrow">A QUIET MOMENT WITH YOURSELF</span><h1 id="tarotTitle">给今天，<br>一个新的视角。</h1><p>静下来，想一想此刻的自己。<br>选一张牌，收下一份温柔的提示。</p><div class="tarot-note"><span>✧</span><p>每天一次，自由抽取。<br>不消耗花园的养分或花券。</p></div><small>牌面是自我觉察的灵感，由你决定今天怎么过。</small></header><div id="tarotStage" class="tarot-stage" aria-live="polite"></div></div><section class="tarot-reflection" id="tarotReflection" hidden><label for="tarotNote">留给今天的一句话</label><textarea id="tarotNote" maxlength="280" placeholder="这张牌，让你想到了什么？只保存在自己的浏览器里。"></textarea><div><small id="tarotSaveStatus">最多 280 字</small><button class="soft-btn ghost" id="saveTarotNote">保存此刻</button></div></section><section class="tarot-history"><h2>翻过的日子</h2><div id="tarotHistory"></div></section></section>
 
   <!-- 日历 -->
   <section class="panel" id="sec-calendar">
@@ -142,6 +162,34 @@
     </section><section class="surface-card focus-card">
     <header class="focus-heading"><div><p class="eyebrow">A MOMENT OF FOCUS</p><h2>这一刻，只做好一件事。</h2></div><span class="focus-heading-note">番茄钟 · 和花园一起生长</span></header>
     <div class="focus-studio"><div class="pomo-box" id="pomoBox"></div><aside class="focus-journal"><span class="eyebrow">MAKE ROOM FOR WHAT MATTERS</span><h3 id="focusTaskTitle">给自己一段安静的时间</h3><p id="focusTaskContext">从一小段专注开始。</p><div class="focus-reward"><span aria-hidden="true">✳</span><p>每完成一段专注，<br>花园就多一份生长的力量。</p></div><div class="focus-history-heading"><h4>最近的专注</h4><span id="focusTodaySummary">今天 0 分钟</span></div><ol id="focusRecent" class="focus-recent"></ol></aside></div>
+    </section><section class="surface-card mcp-card mcp-entry" data-plugin="feynman">
+    <div class="block-label">费曼提问 · 示例</div>
+    <p class="mcp-card-hint">把一个知识点贴进来，助手只负责提问，帮你自己发现理解盲区。答案要你亲手写。</p>
+    <div class="input-row slim"><input id="feynmanInput" type="text" maxlength="120" placeholder="贴一个想检验理解的知识点"></div>
+    <button class="soft-btn mini" id="feynmanAskBtn">唤起助手</button>
+    </section><section class="surface-card mcp-card mcp-entry" data-plugin="ocr">
+    <div class="block-label">图片转文字 · 示例</div>
+    <p class="mcp-card-hint">上传图片或 PDF，解析成文字草稿。解析只在点击后进行，结果确认后才会保存。</p>
+    <div class="wall-actions"><input type="file" id="ocrFile" accept="image/*,application/pdf" class="hidden-file"><button class="soft-btn mini" id="ocrPickBtn">选一张图 / PDF</button><span class="wall-count" id="ocrFileName"></span></div>
+    <button class="soft-btn mini" id="ocrParseBtn" hidden>开始解析</button>
+    </section><section class="surface-card mcp-card mcp-entry" data-plugin="review">
+    <div class="block-label">柔性复习</div>
+    <p class="soft-invite">知识点收进来，到日子轻轻提醒一次，不催不罚。复习节奏在本机计算，不联网。</p>
+    <div class="input-row slim"><input id="reviewItemInput" type="text" maxlength="60" placeholder="写一个想记住的知识点"></div>
+    <div class="review-list" id="reviewList"></div>
+    </section><section class="surface-card mcp-card" id="apiCard">
+    <div class="block-label">AI 接入 · 真实 API 调试</div>
+    <p class="mcp-card-hint">填入你的 DeepSeek 密钥，即可把分拣 / 费曼 / 助记 / 引导切到真实模型。密钥保存在本机浏览器；调用时会将密钥和本次输入发送到你填写的 API 地址。随时可以切回示例模式。</p>
+    <div class="api-form">
+      <input id="apiKeyInput" type="password" placeholder="sk-…（DeepSeek API Key）" autocomplete="off">
+      <input id="apiModelInput" type="text" placeholder="模型名，默认 deepseek-chat" autocomplete="off">
+      <input id="apiBaseInput" type="text" placeholder="接口地址，默认 https://api.deepseek.com" autocomplete="off">
+    </div>
+    <div class="api-actions">
+      <button class="soft-btn mini" id="apiModeBtn">模式：示例模拟</button>
+      <button class="soft-btn mini ghost" id="apiTestBtn">测试连接</button>
+    </div>
+    <p class="api-status" id="apiStatus">未连接。插件当前使用示例数据。</p>
     </section><section class="surface-card more-card">
     <div class="block-label">更多</div>
     <p class="wip-note">更多功能正在慢慢长出来，敬请期待。</p>
@@ -161,21 +209,58 @@
   <!-- 任务：按大目标整理 -->
   <section class="panel" id="sec-tasks">
     <div class="page-title">任务</div>
-    <p class="page-subtitle">每一个小行动，都在靠近你想去的地方。</p>
+    <p class="page-subtitle">聚焦今日要事。</p>
     <div class="page-actions"><button class="soft-btn" id="tasksAddTask">＋ 添加任务</button><button class="soft-btn ghost" id="tasksAddGoal">立一个目标 ↗</button></div>
+    <section class="surface-card promise-card">
+      <div class="block-label">价值承诺</div>
+      <div class="promise-list" id="promiseList"></div>
+      <div class="promise-input-row">
+        <input id="promiseInput" type="text" maxlength="40" placeholder="写下今天最想达成的一个小目标…" autocomplete="off">
+        <button class="soft-btn mini" id="promiseAdd">记下</button>
+      </div>
+      <button class="soft-btn mini ghost mcp-entry inspire-btn" data-plugin="guide" id="promiseGuideBtn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5l1.35 3.7L13 6.5l-3.65 1.3L8 11.5 6.65 7.8 3 6.5l3.65-1.3Z" fill="var(--accent-soft)" stroke="var(--accent)" stroke-opacity=".6" stroke-width="1"/><path d="M12.8 10.6l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5Z" fill="var(--accent)" fill-opacity=".55"/></svg>需要一点灵感？</button>
+    </section>
     <div class="task-view-toggle">
       <button class="soft-btn mini active" id="tvTimeline">时间轴</button>
       <button class="soft-btn mini ghost" id="tvQuad">四象限</button>
     </div>
     <div class="tag-filter" id="tagFilter"></div>
-    <p class="soft-invite" id="tasksHint" hidden>点一下目标卡选中它，接下来写的任务就归到它下面</p>
     <div class="input-row slim goal-row">
       <input id="goalInput" type="text" maxlength="30" placeholder="立一个大目标，回车就好" autocomplete="off">
     </div>
     <div class="goal-cards" id="goalCards"></div>
+    <div class="stone-cards" id="stoneCards" hidden></div>
     <div class="block-label">按目标整理</div>
     <div id="goalGroups"></div>
     <div class="quad-wrap" id="quadWrap" hidden></div>
+  </section>
+
+  <!-- 工作台：碎片桌面 + 归档书架 -->
+  <section class="panel" id="sec-bench">
+    <div class="page-title">工作台</div>
+    <p class="page-subtitle">一张柔光的桌面，放文字和图片的碎片，想留下时再归档成书。</p>
+    <div class="bench-grid">
+      <section class="surface-card bench-card">
+        <div class="block-label">碎片桌面</div>
+        <div class="bench-form">
+          <input id="benchTextInput" type="text" maxlength="80" placeholder="写一句碎片，回车放上桌面" autocomplete="off">
+          <input type="file" id="benchFile" accept="image/*" multiple class="hidden-file">
+          <button class="soft-btn mini" id="benchImgBtn">放几张图</button>
+        </div>
+        <div class="bench-cards" id="benchCards"></div>
+        <p class="bench-empty" id="benchEmpty">桌面还空着。文字或图片都可以放上来。</p>
+        <p class="bench-tip">拖动碎片到右边的书上即可归档；也可以用碎片上的按钮送进思绪整理。</p>
+      </section>
+      <section class="surface-card bench-card">
+        <div class="block-label">归档书架</div>
+        <div class="bench-form">
+          <input id="shelfTitleInput" type="text" maxlength="16" placeholder="新书的名字" autocomplete="off">
+          <button class="soft-btn mini" id="shelfAddBtn">建一本书</button>
+        </div>
+        <div class="shelf-cats" id="shelfCats"></div>
+        <p class="bench-empty" id="shelfEmpty">书架上还没有书。点「建一本书」，再把桌面的碎片拖进来。</p>
+      </section>
+    </div>
   </section>
 
   <!-- 思绪整理 -->
@@ -185,9 +270,12 @@
     <div class="notes-intro">
       <p class="notes-lead">一页想法，一点灵感。慢慢整理成能做的事。</p>
       <div class="notes-ai">
-        <button class="soft-btn ghost" id="aiTaskBtn">AI 解析 · 筹备中</button>
-        <button class="soft-btn ghost" id="aiMapBtn">思维导图 · 筹备中</button>
+        <button class="soft-btn ghost mcp-entry" data-plugin="sorter" id="aiTaskBtn">AI 分拣 · 示例</button>
+        <button class="soft-btn ghost mcp-entry" data-plugin="map" id="aiMapBtn">念头图谱 · 示例</button>
+        <button class="soft-btn ghost mcp-entry" data-plugin="feynman" id="aiFeynmanBtn">费曼提问 · 示例</button>
       </div>
+      <p class="mcp-note">以上插件只在点击时运行（当前为示例数据），结果仅供参考，你确认后才会写入。</p>
+      <button class="quiet-link leaf-entry" id="leafEntryThoughts">有心事想放下？把它写下来，放进溪流漂走 →</button>
     </div>
 
     <div class="subtabs" id="subtabs">
@@ -240,6 +328,7 @@
       <input type="file" id="moodFile" accept="image/*" class="hidden-file">
       <button class="soft-btn" id="moodUploadBtn">上传背景</button>
       <button class="soft-btn ghost" id="moodResetBtn">恢复默认</button>
+      <button class="quiet-link leaf-entry" id="leafEntrySpace">把一件心事写下来，放进溪流 →</button>
     </div>
 
     <div class="space-top-grid"><section class="surface-card mood-card"><p class="eyebrow">HOW ARE YOU, REALLY?</p><div class="block-label">今天，感觉怎么样？</div>
@@ -270,6 +359,16 @@
     </div>
     <p class="jar-empty" id="jarEmpty">罐子还是空的。今天有什么小事吗？</p>
 
+    <div class="jar-branch" id="jarBranch">
+      <div class="jar-branch-head"><small class="eyebrow">A LETTER TO YOUR FUTURE SELF</small><strong>时光信</strong><span class="jar-branch-count" id="letterBranchCount"></span></div>
+      <p class="jar-branch-tip">写给未来的自己，到日子会静静开花。和罐子里的小确幸一样，都替你好好收着。</p>
+      <div class="bud-branch-row" id="letterBranchBuds"></div>
+      <div class="jar-branch-actions">
+        <button class="soft-btn mini" id="letterComposeBtn">写一封时光信</button>
+        <button class="quiet-link" id="letterAlbumBtn">看花苞与卡册 →</button>
+      </div>
+    </div>
+
     </section></div><section class="surface-card photo-card"><div class="block-label">生活的切片</div>
     <div class="wall-wrap">
       <div class="wall-actions">
@@ -297,6 +396,24 @@
   <p class="appearance-description">低饱和的底色，留一点舒服的空白。选择后会自动记住。</p>
   <div class="palette-options" id="paletteOptions" role="group" aria-label="页面配色"></div>
   <p class="appearance-note">跟随页面：今日与笔记用奶杏，日历与专注用雾蓝，任务用草绿，情绪空间用浅紫。</p>
+  <div class="prefs-group">
+    <p class="prefs-group-title">陪伴与动效</p>
+    <button class="pref-switch" id="prefLeafStream" role="switch" aria-checked="true"><span class="pref-track" aria-hidden="true"><i class="pref-knob"></i></span><span class="pref-copy"><strong>溪流落叶</strong><small>把心事写下来，顺溪流漂进下游存档</small></span></button>
+    <button class="pref-switch" id="prefBuds" role="switch" aria-checked="true"><span class="pref-track" aria-hidden="true"><i class="pref-knob"></i></span><span class="pref-copy"><strong>时光花苞</strong><small>写给未来的时光信，到日子会静静绽放</small></span></button>
+    <button class="pref-switch" id="prefMinimal" role="switch" aria-checked="false"><span class="pref-track" aria-hidden="true"><i class="pref-knob"></i></span><span class="pref-copy"><strong>极简模式</strong><small>关掉装饰动画，只保留淡入淡出转场</small></span></button>
+    <button class="pref-switch" id="prefTrail" role="switch" aria-checked="false"><span class="pref-track" aria-hidden="true"><i class="pref-knob"></i></span><span class="pref-copy"><strong>鼠标拖尾</strong><small>只在花园页跟随指针的淡淡余韵，纯装饰，默认关闭</small></span></button>
+    <button class="pref-switch" id="prefCards" role="switch" aria-checked="true"><span class="pref-track" aria-hidden="true"><i class="pref-knob"></i></span><span class="pref-copy"><strong>抽卡彩蛋</strong><small>专注、感恩与放下心事，攒出一次抽卡</small></span></button>
+    <p class="prefs-group-title">MCP 插件（可选外挂）</p>
+    <button class="pref-switch" id="prefMcp" role="switch" aria-checked="true"><span class="pref-track" aria-hidden="true"><i class="pref-knob"></i></span><span class="pref-copy"><strong>MCP 插件总开关</strong><small>只在你点击时调用，输出仅供参考；关闭后所有 AI 入口隐藏，完全离线可用</small></span></button>
+    <details class="mcp-sub-prefs" id="mcpSubPrefs">
+      <summary>子插件开关</summary>
+      <button class="pref-switch" id="prefMcpSorter" role="switch" aria-checked="true"><span class="pref-track" aria-hidden="true"><i class="pref-knob"></i></span><span class="pref-copy"><strong>思绪分拣</strong><small>把杂乱想法分成任务 / 情绪 / 暂缓三类候选</small></span></button>
+      <button class="pref-switch" id="prefMcpFeynman" role="switch" aria-checked="true"><span class="pref-track" aria-hidden="true"><i class="pref-knob"></i></span><span class="pref-copy"><strong>费曼助手</strong><small>只输出引导提问，不给答案、不替你学习</small></span></button>
+      <button class="pref-switch" id="prefMcpOcr" role="switch" aria-checked="true"><span class="pref-track" aria-hidden="true"><i class="pref-knob"></i></span><span class="pref-copy"><strong>文档解析</strong><small>图片 / PDF 提取文字，生成草稿卡片</small></span></button>
+      <button class="pref-switch" id="prefMcpMap" role="switch" aria-checked="true"><span class="pref-track" aria-hidden="true"><i class="pref-knob"></i></span><span class="pref-copy"><strong>念头图谱</strong><small>客观提取历史念头的关键词关系，仅可视化</small></span></button>
+      <button class="pref-switch" id="prefMcpGuide" role="switch" aria-checked="true"><span class="pref-track" aria-hidden="true"><i class="pref-knob"></i></span><span class="pref-copy"><strong>承诺引导</strong><small>温和的启发问题，绝不替你写承诺文案</small></span></button>
+    </details>
+  </div>
 </dialog>
 <dialog class="breathing-dialog" id="breathingDialog" aria-labelledby="breathingTitle">
   <header class="comfort-dialog-heading"><div><p class="eyebrow">A MOMENT FOR YOURSELF</p><h2 id="breathingTitle">先在这里，停一小会儿。</h2></div><button class="dialog-close" id="breathingClose" aria-label="关闭呼吸休息">×</button></header>
@@ -306,14 +423,59 @@
 </dialog>
 <dialog id="gardenDialog" class="garden-dialog" aria-labelledby="gardenTitle">
   <header class="garden-room-header"><div><p class="eyebrow">YOUR OWN LITTLE WORLD</p><h2 id="gardenTitle">我的成长花园</h2></div><button id="closeGarden" class="soft-btn ghost" aria-label="关闭花园">返回日常 ↗</button></header>
-  <div class="garden-room-layout"><div class="garden-scene"><img src="assets/botanical-room.svg" alt="阳光落在种满植物的窗边，中央的花盆会随着你的真实记录生长" class="room-scenery"><div class="garden-scene-quote"><span>把日子种成自己喜欢的样子。</span><small>A LITTLE GROWTH, EVERY DAY</small></div><div id="gardenDetailPlant" class="garden-detail-plant"></div><div class="scene-plaque"><span id="gardenSceneStage">种子静候</span><small>你的努力，正在扎根。</small></div></div>
-  <aside class="garden-journal"><p class="eyebrow">THE STORY SO FAR</p><h3 id="gardenDetailStage">每一份努力，都会留下痕迹。</h3><p id="gardenDetailEnergy"></p><progress id="gardenDetailProgress" max="20" value="0" aria-label="花园下一阶段进度"></progress><p class="garden-next" id="gardenDetailNext">完成一件小事，为花园积攒第一份能量。</p><div class="garden-day-stats"><div><strong id="gardenTaskCount">0</strong><span>今日完成</span></div><div><strong id="gardenFocusMinutes">0</strong><span>专注分钟</span></div><div><strong id="gardenTodayEnergy">0</strong><span>今日能量</span></div></div><div class="garden-actions"><button id="gardenStartFocus" class="soft-btn">开始一段专注 ↗</button><button id="gardenBackTasks" class="quiet-link">去完成一件小事 →</button></div><p class="garden-gentle-note">休息的时候，它也会安静等你。</p></aside></div>
+  <div class="garden-room-layout"><div class="garden-scene"><img src="assets/botanical-room.svg" alt="阳光落在种满植物的窗边，中央的花盆会随着你的真实记录生长" class="room-scenery"><div class="garden-scene-quote"><span>把日子种成自己喜欢的样子。</span><small>A LITTLE GROWTH, EVERY DAY</small></div><div id="gardenDetailPlant" class="garden-detail-plant"></div><div class="scene-plaque"><span id="gardenSceneStage">种子静候</span><small>你的努力，正在扎根。</small></div><div class="bud-row" id="budRow" aria-label="时光花苞"></div><div class="leaf-stream-wrap" id="leafStreamWrap" aria-hidden="true"><div class="leaf-lane" id="leafLane"></div></div><button class="stream-archive-link" id="leafArchiveLink">查看落叶存档</button><div class="garden-ornaments" aria-label="花园摆件"><button type="button" class="ornament" id="ornJar" data-tip="今天记下的小事都收在这里"><svg viewBox="0 0 28 40" aria-hidden="true"><path d="M10 4h8v6l4 6v18a4 4 0 0 1-4 4h-8a4 4 0 0 1-4-4V16l4-6Z" fill="var(--tint)" stroke="var(--accent)" stroke-opacity=".45"/><path d="M10 22q4 3 8 0M11 27q3 2.4 6 0" stroke="var(--accent)" stroke-opacity=".5" fill="none"/></svg><small>感恩瓶</small></button><button type="button" class="ornament" id="ornTime" data-tip="写给未来的信，到日子开花"><svg viewBox="0 0 28 40" aria-hidden="true"><path d="M10 4h8v6l4 6v18a4 4 0 0 1-4 4h-8a4 4 0 0 1-4-4V16l4-6Z" fill="var(--accent-soft)" stroke="var(--accent)" stroke-opacity=".45"/><circle cx="14" cy="26" r="3" fill="var(--surface)" stroke="var(--accent)" stroke-opacity=".5"/></svg><small>时光瓶</small></button><button type="button" class="ornament" id="ornStone" data-tip="暂停的目标，先放一放"><svg viewBox="0 0 28 40" aria-hidden="true"><path d="M8 6h12v4H8Z" fill="var(--tint)" stroke="var(--accent)" stroke-opacity=".45"/><path d="M9 10h10l3.2 7v12.6a3.6 3.6 0 0 1-3.6 3.6h-9.2a3.6 3.6 0 0 1-3.6-3.6V17Z" fill="var(--bg-sub)" stroke="var(--accent)" stroke-opacity=".45"/><ellipse cx="13.5" cy="27" rx="5.5" ry="3.8" fill="var(--tint)" stroke="var(--accent)" stroke-opacity=".5"/><path d="M16 24.5q1.6.6 2.8 0" stroke="var(--accent)" stroke-opacity=".4" fill="none"/></svg><small>静石</small></button><button type="button" class="ornament" id="ornSound" aria-pressed="false" data-tip="花园里的白噪音，陪你安静一会儿"><svg viewBox="0 0 28 40" aria-hidden="true"><path d="M5 6.5h18" stroke="var(--accent)" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"/><path d="M9 6.5v3M14 6.5v4.5M19 6.5v2" stroke="var(--accent)" stroke-opacity=".4" stroke-width="1.2" stroke-linecap="round"/><path d="M7.5 9.5h3v16.5l-1.5 2.5-1.5-2.5Z" fill="var(--tint)" stroke="var(--accent)" stroke-opacity=".45"/><path d="M12.5 11h3v19.5l-1.5 2.5-1.5-2.5Z" fill="var(--accent-soft)" stroke="var(--accent)" stroke-opacity=".45"/><path d="M17.5 8.5h3v13.5l-1.5 2.5-1.5-2.5Z" fill="var(--tint)" stroke="var(--accent)" stroke-opacity=".45"/></svg><small>白噪音</small></button></div></div>
+  <aside class="garden-journal"><p class="eyebrow">THE STORY SO FAR</p><h3 id="gardenDetailStage">每一份努力，都会留下痕迹。</h3><p id="gardenDetailEnergy"></p><progress id="gardenDetailProgress" max="20" value="0" aria-label="花园下一阶段进度"></progress><p class="garden-next" id="gardenDetailNext">完成一件小事，为花园积攒第一份能量。</p><div class="garden-day-stats"><div><strong id="gardenTaskCount">0</strong><span>今日完成</span></div><div><strong id="gardenFocusMinutes">0</strong><span>专注分钟</span></div><div><strong id="gardenTodayEnergy">0</strong><span>今日能量</span></div></div><div class="garden-actions"><button id="gardenStartFocus" class="soft-btn">开始一段专注 ↗</button><button id="gardenBackTasks" class="quiet-link">去完成一件小事 →</button></div><button class="quiet-link bud-album-link" id="budAlbumLink">记忆卡牌册 →</button><p class="garden-gentle-note">休息的时候，它也会安静等你。</p></aside></div>
   <section class="garden-journey" aria-label="植物的五个成长阶段" id="gardenJourney"></section>
-  <div class="garden-bottom"><section class="garden-activity"><h3>今天，为花园做的小事</h3><ul id="gardenActivity"></ul></section><details class="garden-rules"><summary>花园是怎样长大的？</summary><p>完成任务 +5（每日最多 10 项）；完成专注 +10（每日最多 4 轮）。重复勾选不重复累加，心情和每日一句用于回顾，不计入成长。</p><p>种子 0 → 萌芽 20 → 绿叶 60 → 开花 120 → 繁盛 220。撤销完成或删除记录后，能量会随真实记录更新。</p></details></div>
+  <div class="garden-bottom"><section class="garden-activity"><h3>今天，为花园做的小事</h3><ul id="gardenActivity"></ul></section><section class="garden-activity garden-stones" hidden><h3>静石 · 先放一放的事</h3><div class="garden-stone-row" id="stoneRow"></div><p class="garden-gentle-note">放下的不算失败。石头会安静等你，想回来的时候随时重新立起。</p></section><details class="garden-rules"><summary>花园是怎样长大的？</summary><p>完成任务 +5（每日最多 10 项）；完成专注 +10（每日最多 4 轮）。重复勾选不重复累加，心情和每日一句用于回顾，不计入成长。</p><p>种子 0 → 萌芽 20 → 绿叶 60 → 开花 120 → 繁盛 220。撤销完成或删除记录后，能量会随真实记录更新。</p></details></div>
 </dialog>
-<script src="js/growth-core.js?v=3"></script>
-<script src="app.js?v=70"></script>
-<script src="js/growth-ui.js?v=4"></script>
-<script src="js/comfort-ui.js?v=1"></script>
+<dialog class="leaf-dialog" id="leafInputDialog" aria-labelledby="leafInputTitle">
+  <header class="comfort-dialog-heading"><div><p class="eyebrow">LET IT DRIFT AWAY</p><h2 id="leafInputTitle">把心事写下来，交给溪流</h2></div><button class="dialog-close" id="leafInputClose" aria-label="关闭">×</button></header>
+  <p class="leaf-dialog-hint" id="leafInputHint">写下来，看着它顺水漂远。叶子不会丢失，之后可以在下游存档随时找回。</p>
+  <textarea id="leafInputText" class="leaf-textarea" maxlength="120" rows="3" placeholder="此刻让你不安的那个念头…"></textarea>
+  <div class="leaf-dialog-actions"><button class="soft-btn" id="leafSubmit">放到溪流</button><button class="quiet-link" id="leafCancel">先留在心里</button></div>
+</dialog>
+<dialog class="leaf-dialog" id="leafArchiveDialog" aria-labelledby="leafArchiveTitle">
+  <header class="comfort-dialog-heading"><div><p class="eyebrow">DOWNSTREAM ARCHIVE</p><h2 id="leafArchiveTitle">下游存档</h2></div><button class="dialog-close" id="leafArchiveClose" aria-label="关闭">×</button></header>
+  <p class="leaf-dialog-hint">漂远的叶子都停在这里。随时回看、捞起重新编辑，或把它变成一件想做的事。</p>
+  <div id="leafArchiveList" class="leaf-archive-list"></div>
+</dialog>
+<dialog class="leaf-dialog" id="budAlbumDialog" aria-labelledby="budAlbumTitle">
+  <header class="comfort-dialog-heading"><div><p class="eyebrow">MEMORY BLOOMS</p><h2 id="budAlbumTitle">记忆卡牌册</h2></div><button class="dialog-close" id="budAlbumClose" aria-label="关闭">×</button></header>
+  <p class="leaf-dialog-hint">每一张卡牌，都是当年写给未来的一句话。翻开看看那时的自己。</p>
+  <div id="budAlbumGrid" class="bud-album-grid"></div>
+</dialog>
+<dialog class="leaf-dialog" id="letterComposeDialog" aria-labelledby="letterComposeTitle">
+  <header class="comfort-dialog-heading"><div><p class="eyebrow">A LETTER TO YOUR FUTURE SELF</p><h2 id="letterComposeTitle">写一封时光信</h2></div><button class="dialog-close" id="letterComposeClose" aria-label="关闭">×</button></header>
+  <p class="leaf-dialog-hint">写给未来某一天的自己。到日子那天，花园里会开出一枚花苞，替你把这封信绽放出来。信只保存在本机浏览器。</p>
+  <textarea id="letterComposeText" class="leaf-textarea" maxlength="120" rows="3" placeholder="想对未来的自己说点什么…"></textarea>
+  <div class="letter-date-row"><label for="letterComposeDate">开启的日子</label><input type="date" id="letterComposeDate"></div>
+  <div class="leaf-dialog-actions"><button class="soft-btn" id="letterComposeSubmit">封好这封信</button><button class="quiet-link" id="letterComposeCancel">再想想</button></div>
+</dialog>
+<dialog class="leaf-dialog" id="wardrobeDialog" aria-labelledby="wardrobeTitle">
+  <header class="comfort-dialog-heading"><div><p class="eyebrow">LITTLE DRESS-UP HOUSE</p><h2 id="wardrobeTitle">装扮小屋</h2></div><button class="dialog-close" id="wardrobeClose" aria-label="关闭">×</button></header>
+  <p class="leaf-dialog-hint" id="wardrobeEnergy">微光能量 · 0</p>
+  <div id="wardrobeList" class="wardrobe-list"></div>
+  <details class="draw-bg-prefs"><summary>抽卡背景</summary>
+    <p class="leaf-dialog-hint">上传几张喜欢的图当抽卡背景，或者继续用默认柔色。可以选择固定一张或随机切换。</p>
+    <div class="draw-bg-actions">
+      <button class="soft-btn mini" id="drawBgUpload">加几张图</button>
+      <input type="file" id="drawBgFile" accept="image/*" multiple class="hidden-file">
+      <button class="soft-btn mini ghost" id="drawBgMode">模式：默认柔色</button>
+      <button class="quiet-link" id="drawBgClear">清空图片</button>
+    </div>
+    <div class="draw-bg-pool" id="drawBgPool"></div>
+  </details>
+</dialog>
+<script src="js/botany-core.js?v=20261119"></script>
+<script src="js/garden-art.js?v=20261119"></script>
+<script src="js/growth-core.js?v=20261119"></script>
+<script src="app.js?v=20261119"></script>
+<script src="js/growth-ui.js?v=20261119"></script>
+<script src="js/comfort-ui.js?v=20261119"></script>
+<script src="js/companions-ui.js?v=20261119"></script>
+<script src="js/cards-ui.js?v=20261119"></script>
+<script src="js/mcp-ui.js?v=20261119"></script>
+<script src="js/bench-ui.js?v=20261119"></script>
+<script src="js/botany-ui.js?v=20261119"></script>
 </body>
 </html>

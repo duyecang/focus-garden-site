@@ -14,15 +14,14 @@
   --fs-h2:17px;
   --fs-body:14px;
   --fs-body-s:13px;
-  --fs-caption:12px;
+  --fs-caption:11px;
   --fs-micro:11px;
   --ls-title:0;
   --ls-label:0;
-  --card-radius:18px;
-  --card-shadow:0 4px 22px #2d493006
+  --card-shadow:0 2px 8px rgba(0,0,0,0.05)
 }
 html,body {
-  font-family:"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif
+  font-family:var(--font-ui)
 }
 button,input,select,textarea {
   font-family:inherit
@@ -31,7 +30,7 @@ button {
   -webkit-tap-highlight-color:transparent
 }
 button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible,[tabindex]:focus-visible {
-  outline:3px solid #8aa77b;
+  outline:3px solid var(--accent-soft);
   outline-offset:3px
 }
 input::placeholder,textarea::placeholder {
@@ -82,7 +81,7 @@ input::placeholder,textarea::placeholder {
 }
 .nav-item {
   padding:13px 17px;
-  border-radius:11px;
+  border-radius:var(--r-md);
   font-size:14px;
   font-weight:400;
   color:#72806a;
@@ -124,7 +123,7 @@ input::placeholder,textarea::placeholder {
   margin:8px 0 16px
 }
 .nav-foot small {
-  font-size:8px;
+  font-size:10px;
   letter-spacing:1.4px;
   opacity:.7
 }
@@ -184,9 +183,9 @@ input::placeholder,textarea::placeholder {
   margin:0 0 22px
 }
 .soft-btn {
-  border:1px solid #54764c;
-  border-radius:9px;
-  background:#54764c;
+  border:1px solid var(--accent-strong);
+  border-radius:var(--radius-control);
+  background:var(--accent-strong);
   color:#fff;
   padding:10px 17px;
   font-size:13px;
@@ -194,16 +193,16 @@ input::placeholder,textarea::placeholder {
   box-shadow:none
 }
 .soft-btn:not(.ghost),.soft-btn:not(.ghost):hover {
-  background:#54764c;
+  background:var(--accent-strong);
   color:#fff
 }
 .soft-btn.ghost {
-  background:#f8faf4;
-  color:#5f7855;
-  border-color:#dce5d3
+  background:var(--tint);
+  color:var(--accent);
+  border-color:var(--line)
 }
 .soft-btn.ghost:hover {
-  background:#edf2e6
+  background:var(--accent-soft)
 }
 .soft-btn.mini {
   padding:7px 12px;
@@ -236,7 +235,7 @@ input::placeholder,textarea::placeholder {
 .surface-card {
   background:#fff;
   border:1px solid var(--line);
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   padding:24px;
   min-width:0;
   box-shadow:var(--card-shadow)
@@ -250,7 +249,7 @@ input::placeholder,textarea::placeholder {
 .input-row input,.line-row input,.event-form input,.todo-form input,.ed-field,.ov-input,.jar-input-row input {
   background:#f7f9f3;
   border:1px solid #e1e7da;
-  border-radius:9px;
+  border-radius:var(--radius-control);
   font-size:13px;
   color:var(--text);
   padding:11px 13px;
@@ -271,10 +270,10 @@ input::placeholder,textarea::placeholder {
   font-weight:600
 }
 .eyebrow {
-  font-size:9px!important;
+  font-size:10px!important;
   font-weight:600;
   letter-spacing:1.7px!important;
-  color:#6c8a60!important
+  color:var(--accent)!important
 }
 
 /* Today: the garden stays in view alongside the work. */
@@ -296,7 +295,7 @@ input::placeholder,textarea::placeholder {
   position:relative;
   min-height:225px;
   overflow:hidden;
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   background:#e0eddd;
   margin:0 0 20px;
   isolation:isolate
@@ -349,7 +348,7 @@ input::placeholder,textarea::placeholder {
   align-items:center;
   padding:20px;
   border:1px solid var(--line);
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   background:#fff;
   margin:0 0 20px;
   box-shadow:var(--card-shadow)
@@ -367,7 +366,7 @@ input::placeholder,textarea::placeholder {
 .growth-heading strong {
   font-size:24px;
   font-weight:600;
-  color:#54764c;
+  color:var(--accent-strong);
   font-variant-numeric:tabular-nums
 }
 .growth-main .growth-heading h2 {
@@ -380,7 +379,7 @@ input::placeholder,textarea::placeholder {
   width:100%;
   height:5px;
   border:0;
-  border-radius:6px;
+  border-radius:var(--r-pill);
   overflow:hidden;
   margin:10px 0 6px;
   background:#eef2e8
@@ -390,11 +389,11 @@ progress::-webkit-progress-bar {
 }
 progress::-webkit-progress-value {
   background:#99b38b;
-  border-radius:6px
+  border-radius:var(--r-pill)
 }
 progress::-moz-progress-bar {
   background:#99b38b;
-  border-radius:6px
+  border-radius:var(--r-pill)
 }
 .growth-main p {
   font-size:11px;
@@ -426,8 +425,8 @@ progress::-moz-progress-bar {
 .date-strip-row {
   background:#fff;
   padding:10px 12px;
-  border:1px solid var(--line);
-  border-radius:12px;
+  border:1px solid transparent;
+  border-radius:var(--r-md);
   box-shadow:none;
   gap:8px;
   margin:0 0 16px
@@ -447,7 +446,7 @@ progress::-moz-progress-bar {
   gap:5px
 }
 .ds-week {
-  font-size:9px;
+  font-size:10px;
   color:#98a18f
 }
 .ds-day {
@@ -456,7 +455,7 @@ progress::-moz-progress-bar {
   font-size:11px;
   color:#78896d;
   background:transparent;
-  border-radius:8px
+  border-radius:var(--r-sm)
 }
 .ds-cell.today .ds-day {
   background:#719167;
@@ -485,7 +484,7 @@ progress::-moz-progress-bar {
 .today-search input {
   border:1px solid var(--line);
   background:#fff;
-  border-radius:10px;
+  border-radius:var(--r-md);
   padding:12px 15px;
   font-size:12px
 }
@@ -497,7 +496,7 @@ progress::-moz-progress-bar {
   min-width:0;
   background:#fff;
   border:1px solid var(--line);
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   padding:20px 16px;
   box-shadow:var(--card-shadow)
 }
@@ -514,7 +513,7 @@ progress::-moz-progress-bar {
   color:#89a07b;
   font-size:13px;
   border:1px dashed #dbe4d2;
-  border-radius:10px;
+  border-radius:var(--radius-control);
   width:100%
 }
 .add-mini {
@@ -538,7 +537,7 @@ progress::-moz-progress-bar {
   gap:8px;
   padding:12px 10px;
   border:1px solid #e7ecdf;
-  border-radius:10px;
+  border-radius:var(--radius-control);
   background:#fafbf7;
   position:relative
 }
@@ -564,10 +563,10 @@ progress::-moz-progress-bar {
 .row-time {
   font-size:10px;
   font-weight:500;
-  padding:3px 6px;
+  padding:3px 8px;
   background:#edf3e7;
   border-color:#e1e9d9;
-  border-radius:5px;
+  border-radius:var(--radius-pill);
   color:#7a956b
 }
 .row-meta {
@@ -575,8 +574,8 @@ progress::-moz-progress-bar {
   margin-top:6px
 }
 .row-meta .tag-chip {
-  font-size:9px;
-  padding:2px 5px;
+  font-size:10px;
+  padding:2px 7px;
   border:0;
   background:#edf2e7;
   color:#8b9b7e
@@ -598,7 +597,7 @@ progress::-moz-progress-bar {
   padding:3px;
   min-width:25px;
   min-height:28px;
-  border-radius:6px;
+  border-radius:var(--r-sm);
   font-size:16px
 }
 .row-icon:hover {
@@ -622,7 +621,7 @@ progress::-moz-progress-bar {
 .mini-calendar-card {
   background:#fff;
   border:1px solid var(--line);
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   padding:20px;
   box-shadow:var(--card-shadow)
 }
@@ -648,7 +647,7 @@ progress::-moz-progress-bar {
   min-width:0;
   width:100%;
   aspect-ratio:1;
-  border-radius:7px;
+  border-radius:var(--radius-control);
   background:transparent;
   color:#819071;
   font-size:10px;
@@ -673,14 +672,14 @@ progress::-moz-progress-bar {
 .garden-preview {
   background:#edf3e5;
   border:1px solid #dce7d2;
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   overflow:hidden
 }
 .garden-preview>.card-heading {
   padding:21px 20px 0
 }
 .garden-preview .eyebrow {
-  font-size:8px!important;
+  font-size:10px!important;
   letter-spacing:1.5px!important;
   margin-bottom:5px
 }
@@ -724,7 +723,7 @@ progress::-moz-progress-bar {
   width:100%;
   border:0;
   height:5px;
-  border-radius:5px;
+  border-radius:var(--r-pill);
   overflow:hidden;
   margin-top:12px
 }
@@ -789,7 +788,7 @@ progress::-moz-progress-bar {
 }
 .calendar-surface {
   border:1px solid var(--line);
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   background:#fff;
   padding:20px;
   min-width:0;
@@ -822,7 +821,7 @@ progress::-moz-progress-bar {
   aspect-ratio:auto;
   padding:11px;
   border:1px solid #e8eddf;
-  border-radius:10px;
+  border-radius:var(--radius-control);
   background:#fcfdf9;
   overflow:hidden;
   text-align:left;
@@ -854,17 +853,17 @@ progress::-moz-progress-bar {
   line-height:1.9
 }
 .cal-more {
-  font-size:9px
+  font-size:10px
 }
 .cal-tag {
   display:block;
   width:max-content;
   max-width:100%;
-  padding:2px 5px;
+  padding:2px 7px;
   background:#eaf0e0;
   color:#7b906b;
-  border-radius:4px;
-  font-size:9px;
+  border-radius:var(--radius-pill);
+  font-size:10px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap
@@ -883,7 +882,7 @@ progress::-moz-progress-bar {
 .cal-day {
   background:#fff;
   border:1px solid var(--line);
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   padding:24px
 }
 .cal-day-title {
@@ -917,7 +916,7 @@ progress::-moz-progress-bar {
   margin:12px 0 20px
 }
 .repeat-opt {
-  border-radius:6px
+  border-radius:var(--radius-control)
 }
 .repeat-opt.active {
   background:#dfe9d4
@@ -955,7 +954,7 @@ progress::-moz-progress-bar {
 .event-row {
   background:#f5f7ef;
   border-color:#e6ecdd;
-  border-radius:10px;
+  border-radius:var(--radius-control);
   gap:9px;
   padding:12px
 }
@@ -971,7 +970,7 @@ progress::-moz-progress-bar {
 .tpl-chip {
   background:#f0f5e8;
   border-color:#e0e9d5;
-  border-radius:9px
+  border-radius:var(--radius-control)
 }
 .tpl-use {
   font-size:12px;
@@ -981,7 +980,7 @@ progress::-moz-progress-bar {
   font-size:14px
 }
 .tpl-add-row input {
-  border-radius:8px;
+  border-radius:var(--r-md);
   border-color:#e2e9d9;
   background:#f9faf5;
   font-size:12px;
@@ -1028,7 +1027,7 @@ progress::-moz-progress-bar {
 }
 .pomo-custom {
   width:96px;
-  border-radius:7px;
+  border-radius:var(--radius-control);
   font-size:11px;
   background:#f8faf4;
   border-color:#dae5ce
@@ -1046,7 +1045,7 @@ progress::-moz-progress-bar {
   background:#f8faf4;
   border:1px solid #dce6cf;
   color:#6d865c;
-  border-radius:8px;
+  border-radius:var(--r-md);
   padding:10px;
   margin-top:8px;
   font-size:12px
@@ -1081,8 +1080,8 @@ progress::-moz-progress-bar {
 }
 .tag-filter .tag-chip {
   font-size:11px;
-  padding:7px 12px;
-  border-radius:7px;
+  padding:7px 14px;
+  border-radius:var(--radius-pill);
   background:#fff;
   border-color:#dfe7d5
 }
@@ -1097,7 +1096,7 @@ progress::-moz-progress-bar {
 .goal-card {
   background:#edf3e4;
   border:1px solid #dce6ce;
-  border-radius:12px;
+  border-radius:var(--radius-card);
   padding:18px;
   min-width:180px;
   box-shadow:none
@@ -1130,7 +1129,7 @@ progress::-moz-progress-bar {
 .goal-group {
   background:#fff;
   border:1px solid var(--line);
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   padding:22px;
   margin-bottom:16px;
   box-shadow:var(--card-shadow)
@@ -1148,7 +1147,7 @@ progress::-moz-progress-bar {
 .quad-cell {
   padding:20px;
   border-color:#e2e8d9;
-  border-radius:14px;
+  border-radius:var(--radius-card);
   min-width:0
 }
 .quad-cell:nth-child(1) {
@@ -1170,7 +1169,7 @@ progress::-moz-progress-bar {
 }
 .quad-chip {
   font-size:12px;
-  border-radius:8px;
+  border-radius:var(--r-md);
   background:#ffffffd9;
   border-color:#e2e8d9
 }
@@ -1178,7 +1177,7 @@ progress::-moz-progress-bar {
   padding:24px;
   background:#ecf2e4;
   border:1px solid #e0e8d5;
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   margin:0 0 22px
 }
 .notes-lead {
@@ -1217,7 +1216,7 @@ progress::-moz-progress-bar {
 .sub-panel {
   background:#fff;
   border:1px solid var(--line);
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   padding:26px
 }
 .sub-panel .block-label {
@@ -1238,7 +1237,7 @@ progress::-moz-progress-bar {
 .note-row {
   background:#faf9f2;
   border-color:#ebe9d8;
-  border-radius:12px;
+  border-radius:var(--radius-card);
   padding:18px
 }
 .note-text {
@@ -1263,7 +1262,7 @@ progress::-moz-progress-bar {
 .mood-bg {
   min-height:170px;
   height:170px;
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   background-size:cover;
   background-position:center;
   border:1px solid #e0e8d4
@@ -1329,7 +1328,7 @@ progress::-moz-progress-bar {
   margin-top:22px
 }
 .char-counter {
-  font-size:9px;
+  font-size:10px;
   color:#a7b098;
   margin-top:5px
 }
@@ -1337,7 +1336,7 @@ progress::-moz-progress-bar {
   margin:0;
   padding:24px;
   border:1px solid var(--line);
-  border-radius:var(--card-radius);
+  border-radius:var(--r-lg) / calc(var(--r-lg) + 2px);
   background:#fff;
   min-width:0
 }
@@ -1370,7 +1369,7 @@ progress::-moz-progress-bar {
   height:14px;
   aspect-ratio:1;
   background:#eef2e6;
-  border-radius:3px;
+  border-radius:var(--r-pill);
   min-width:0
 }
 .heat-cell.level-1 {
@@ -1392,7 +1391,7 @@ progress::-moz-progress-bar {
 .review-label select {
   padding:5px 8px;
   border:1px solid #e2e8d8;
-  border-radius:6px;
+  border-radius:var(--radius-control);
   background:#f7f9f1;
   color:#7f936e;
   font-size:10px
@@ -1406,7 +1405,7 @@ progress::-moz-progress-bar {
 .pool {
   height:130px;
   background:linear-gradient(180deg,#f3f6eb,#e4ebda);
-  border-radius:12px
+  border-radius:var(--radius-card)
 }
 .pool::before {
   background:linear-gradient(180deg,#ceddc133,transparent)
@@ -1429,6 +1428,109 @@ progress::-moz-progress-bar {
   height:210px;
   min-height:190px;
   background:radial-gradient(ellipse,#f0eddb66,transparent 65%)
+}
+/* ---------- 花园弹窗局部字体层级（不改动全局 :root） ---------- */
+#gardenDialog {
+  --gd-stat: 34px;      /* 右侧核心数据锚点 */
+  --gd-title: 26px;     /* 弹窗主标题 / 侧栏阶段标题 */
+  --gd-sub-deep: #5C4B3E; /* 副标题加深色，制造大小极差 */
+}
+#gardenDialog .garden-room-header h2 { font-size: var(--gd-title); line-height: var(--lh-tight); }
+#gardenDialog .garden-room-header .eyebrow { color: var(--gd-sub-deep) !important; }
+#gardenDialog .garden-journal h3 { font-size: var(--gd-title); line-height: var(--lh-tight); }
+#gardenDialog .garden-journal .eyebrow { color: var(--gd-sub-deep) !important; }
+#gardenDialog .garden-journal #gardenDetailEnergy { font-size: var(--fs-body-s); color: var(--gd-sub-deep); }
+#gardenDialog .garden-journal .garden-next { font-size: var(--fs-body-s); color: var(--gd-sub-deep); }
+#gardenDialog .garden-day-stats strong { font-size: var(--gd-stat); font-weight: var(--fw-b); line-height: var(--lh-tight); }
+#gardenDialog .garden-day-stats span { font-size: var(--fs-caption); color: var(--gd-sub-deep); }
+#gardenDialog .scene-plaque span { font-size: 24px; font-weight: var(--fw-m); line-height: var(--lh-tight); }
+#gardenDialog .scene-plaque small { font-size: var(--fs-caption); color: var(--gd-sub-deep); }
+
+/* 次级文本链接降维：13px + 淡叶芽图标，退居二线 */
+#gardenDialog .quiet-link {
+  font-size: var(--fs-body-s);
+  color: #6b7563;
+  font-weight: var(--fw-r);
+}
+#gardenDialog .quiet-link::before {
+  content: '';
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-right: 6px;
+  vertical-align: -1px;
+  opacity: .75;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 10.5C6 6.6 8.4 3.6 11 2.4c-.4 4-2.4 7.3-6 8.1Z' fill='%238a9a7d'/%3E%3Cpath d='M6 10.5C5.2 7.2 3.6 5.1 1.4 4c.7 3 2.1 5.5 4.6 6.5Z' fill='%23aab49d'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* ---------- 花园常驻摆件：感恩瓶 / 时光瓶 / 静石 ---------- */
+.garden-ornaments {
+  position:absolute;
+  right:14px;
+  bottom:12px;
+  display:flex;
+  align-items:flex-end;
+  gap:16px;
+  z-index:3
+}
+.ornament {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:7px;
+  border:none;
+  background:none;
+  cursor:pointer;
+  transition:transform .22s ease,filter .22s ease
+}
+.ornament svg { width:26px;height:34px }
+.ornament small { font-size:12px;color:var(--text-sub);letter-spacing:.5px }
+.ornament:hover,.ornament:focus-visible { transform:translateY(-2px) scale(1.05);filter:brightness(1.05) }
+/* 悬浮说明由全局 JS tooltip（手账纸胶带风）接管，见 style.css .tooltip */
+.ornament.glowing svg { animation:ornament-glow 1.4s ease-out 1 }
+@keyframes ornament-glow {
+  0% { filter:drop-shadow(0 0 0 rgba(255,246,224,0)) }
+  35% { filter:drop-shadow(0 0 14px rgba(255,243,214,.95)) }
+  100% { filter:drop-shadow(0 0 0 rgba(255,246,224,0)) }
+}
+/* ---------- 白噪音：响着的时候，风铃慢慢呼吸 ---------- */
+.ornament.sound-on svg { animation:orn-sound-breathe 4.6s ease-in-out infinite }
+@keyframes orn-sound-breathe {
+  0%, 100% { opacity:.9 }
+  50% { opacity:1; filter:drop-shadow(0 0 7px rgba(255,244,219,.6)) }
+}
+.wn-chips { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:14px 0 4px }
+.wn-chip {
+  padding:10px 0 9px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--bg-sub);
+  color:var(--text-sub);
+  font-size:var(--fs-body-s);
+  cursor:pointer;
+  transition:border-color .2s ease, background .2s ease, color .2s ease
+}
+.wn-chip:hover { border-color:var(--accent-soft) }
+.wn-chip.active { border-color:var(--accent); background:var(--accent-soft); color:var(--accent-strong) }
+.wn-row { display:flex; align-items:center; gap:12px; margin:12px 0 2px; font-size:var(--fs-body-s); color:var(--text-sub) }
+.wn-row input[type=range] { flex:1; accent-color:var(--accent) }
+.wn-row output { min-width:34px; text-align:right; font-variant-numeric:tabular-nums }
+@media (prefers-reduced-motion:reduce) { .ornament.sound-on svg { animation:none } }
+/* 四个摆件在窄屏略微收拢，避免挤出场景 */
+@media (max-width:640px) {
+  .garden-ornaments { gap:10px; right:10px }
+  .ornament svg { width:22px; height:29px }
+  .ornament small { font-size:11px; letter-spacing:.3px }
+}
+/* 点植物柔光提亮 */
+.garden-detail-plant { cursor:pointer }
+.garden-detail-plant.plant-glow svg,
+.garden-detail-plant.plant-glow img { animation:plant-soft-light 1.4s ease-out 1 }
+@keyframes plant-soft-light {
+  0% { filter:none }
+  35% { filter:brightness(1.12) drop-shadow(0 0 16px rgba(255,243,214,.85)) }
+  100% { filter:none }
 }
 .jar {
   width:145px;
@@ -1457,7 +1559,7 @@ progress::-moz-progress-bar {
 }
 .wall-shell {
   background:#fafbf7;
-  border-radius:12px
+  border-radius:var(--r-xl) / calc(var(--r-xl) + 2px)
 }
 .wall-actions {
   background:none;
@@ -1477,21 +1579,21 @@ progress::-moz-progress-bar {
 .wall-item {
   background:#fdfefb;
   border:1px solid #e5eadc;
-  border-radius:10px;
+  border-radius:var(--r-md);
   box-shadow:0 5px 15px #536c4220
 }
 .wall-item .wall-date,.wall-item .wall-note {
   font-size:10px
 }
 .segmented {
-  border-radius:8px;
+  border-radius:var(--r-md);
   background:#eff3e7;
   padding:4px
 }
 .segmented button {
   font-size:11px;
-  padding:6px 10px;
-  border-radius:5px
+  padding:6px 12px;
+  border-radius:var(--radius-pill)
 }
 .segmented button.active {
   background:#dce7d0;
@@ -1509,12 +1611,12 @@ progress::-moz-progress-bar {
   border:1px solid var(--line);
   background:#fafcf5;
   color:var(--text);
-  border-radius:22px;
+  border-radius:var(--radius-card);
   padding:26px;
-  box-shadow:0 30px 100px #23371e33
+  box-shadow:0 30px 80px rgba(0,0,0,.2)
 }
 .garden-dialog::backdrop {
-  background:#25332166;
+  background:rgba(14,22,18,.62);
   backdrop-filter:blur(5px)
 }
 .garden-detail-plant {
@@ -1532,16 +1634,16 @@ progress::-moz-progress-bar {
 }
 .garden-dialog summary {
   cursor:pointer;
-  color:#54764c
+  color:var(--accent-strong)
 }
 .overlay {
-  background:#24331e55;
+  background:rgba(20,26,24,.5);
   backdrop-filter:blur(4px)
 }
 .overlay-card {
   border:1px solid var(--line);
-  border-radius:20px;
-  box-shadow:0 24px 100px #1f331c33
+  border-radius:var(--radius-card);
+  box-shadow:0 24px 60px rgba(0,0,0,.18)
 }
 .overlay-card .ov-title {
   font-size:17px;
@@ -1563,12 +1665,12 @@ progress::-moz-progress-bar {
 .drawer-panel input,.drawer-panel textarea {
   background:#f1f5e9;
   border:1px solid #dce5cf;
-  border-radius:8px;
+  border-radius:var(--r-md);
   padding:12px;
   color:var(--text)
 }
 .drawer-panel img {
-  border-radius:12px
+  border-radius:var(--r-lg)
 }
 .toast {
   background:#ecf2e3;
@@ -1577,7 +1679,7 @@ progress::-moz-progress-bar {
   color:#5e7a4f
 }
 .snackbar {
-  border-radius:12px;
+  border-radius:var(--r-lg);
   font-size:12px;
   background:#425b3c
 }
@@ -1618,13 +1720,19 @@ progress::-moz-progress-bar {
   width:7px;
   height:5px
 }
+/* 修复：桌宠上传按钮不再悬挂出圆外与图形文字重叠；改为圆内小胶囊徽标 */
 .pet-upload {
-  font-size:8px;
-  padding:2px 5px;
-  bottom:-8px;
+  font-size:10px;
+  width:auto;
+  height:auto;
+  padding:2px 9px;
+  bottom:0;
   right:0;
-  background:#f7faf1;
-  border-color:#dbe5cf
+  border-radius:var(--radius-pill);
+  background:var(--bg-sub);
+  border-color:var(--line);
+  color:var(--text-sub);
+  box-shadow:0 1px 4px rgba(0,0,0,.1)
 }
 .bubble {
   bottom:100px;
@@ -1735,12 +1843,12 @@ progress::-moz-progress-bar {
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    font-size:9px;
+    font-size:10px;
     white-space:nowrap;
     gap:5px;
     letter-spacing:0;
     padding:5px 0;
-    border-radius:9px;
+    border-radius:var(--r-md);
     min-width:0
   }
   .nav-item svg {
@@ -1788,7 +1896,7 @@ progress::-moz-progress-bar {
     max-width:255px
   }
   .garden-welcome .eyebrow {
-    font-size:8px!important;
+    font-size:10px!important;
     letter-spacing:1px!important
   }
   .garden-welcome p:not(.eyebrow) {
@@ -1807,7 +1915,7 @@ progress::-moz-progress-bar {
     padding:16px 14px;
     gap:13px;
     margin-bottom:14px;
-    border-radius:14px
+    border-radius:var(--r-xl) / calc(var(--r-xl) + 2px)
   }
   .growth-heading strong {
     font-size:21px
@@ -1829,7 +1937,7 @@ progress::-moz-progress-bar {
     display:none
   }
   .growth-main p {
-    font-size:9px
+    font-size:10px
   }
   .growth-main progress {
     margin-top:8px
@@ -1847,7 +1955,7 @@ progress::-moz-progress-bar {
     min-width:27px
   }
   .ds-week {
-    font-size:8px
+    font-size:10px
   }
   .ds-day {
     width:29px;
@@ -1857,7 +1965,7 @@ progress::-moz-progress-bar {
   .date-strip-row>.soft-btn {
     padding:6px 0;
     margin-left:3px;
-    font-size:9px
+    font-size:10px
   }
   .today-search {
     order:4;
@@ -1892,7 +2000,7 @@ progress::-moz-progress-bar {
     display:grid;
     grid-template-columns:110px minmax(0,1fr);
     margin-bottom:16px;
-    border-radius:14px
+    border-radius:var(--r-lg) / calc(var(--r-lg) + 2px)
   }
   .garden-preview>.card-heading {
     grid-column:1/-1;
@@ -1902,7 +2010,7 @@ progress::-moz-progress-bar {
     font-size:14px
   }
   .garden-preview .eyebrow {
-    font-size:7px!important;
+    font-size:10px!important;
     margin-bottom:3px
   }
   .garden-plant {
@@ -1918,7 +2026,7 @@ progress::-moz-progress-bar {
     font-size:12px
   }
   .garden-stage-line span {
-    font-size:8px
+    font-size:10px
   }
   .garden-caption p {
     font-size:11px
@@ -1938,7 +2046,7 @@ progress::-moz-progress-bar {
   }
   .surface-card {
     padding:20px;
-    border-radius:14px
+    border-radius:var(--r-lg) / calc(var(--r-lg) + 2px)
   }
   .block-label {
     font-size:15px
@@ -1973,10 +2081,10 @@ progress::-moz-progress-bar {
   }
   .calendar-surface {
     padding:11px 8px;
-    border-radius:14px
+    border-radius:var(--r-xl) / calc(var(--r-xl) + 2px)
   }
   .cal-weekdays {
-    font-size:9px;
+    font-size:10px;
     padding:3px 0 10px
   }
   .cal-month {
@@ -1985,7 +2093,7 @@ progress::-moz-progress-bar {
   .cal-cell {
     height:75px;
     padding:6px 3px;
-    border-radius:6px
+    border-radius:var(--r-md)
   }
   .cal-num {
     font-size:11px;
@@ -1996,7 +2104,7 @@ progress::-moz-progress-bar {
     line-height:1.7
   }
   .cal-tag {
-    font-size:8px;
+    font-size:10px;
     padding:1px 2px;
     margin-top:2px
   }
@@ -2118,7 +2226,7 @@ progress::-moz-progress-bar {
   }
   .growth-records {
     padding:20px;
-    border-radius:14px
+    border-radius:var(--r-lg)
   }
   .mood-dot {
     width:38px;

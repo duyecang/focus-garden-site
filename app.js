@@ -155,7 +155,7 @@ function playChime() {
    新增键：fg_todos（待办+提醒）、fg_notes（想法速记）、fg_pomo（番茄钟）
    IndexedDB：fg_db / photos */
 const storedVersions = new Map();
-const RECORD_KEYS = ["fg_tasks", "fg_todos", "fg_notes", "fg_goals", "fg_mood", "fg_events", "fg_jar", "fg_dayline", "fg_templates", "fg_quadrant", "fg_focus_sessions"];
+const RECORD_KEYS = ["fg_tasks", "fg_todos", "fg_notes", "fg_goals", "fg_mood", "fg_events", "fg_jar", "fg_dayline", "fg_templates", "fg_quadrant", "fg_focus_sessions", "fg_promises"];
 function readStored(key) {
   const raw = localStorage.getItem(key);
   storedVersions.set(key, raw);
@@ -205,6 +205,7 @@ function reloadRecord(key) {
   else if (key === "fg_templates") templates = loadJSON(key, TPL_DEFAULT);
   else if (key === "fg_quadrant") quadrant = loadJSON(key, {});
   else if (key === "fg_focus_sessions") focusSessions = loadJSON(key, []);
+  else if (key === "fg_promises") promises = loadJSON(key, []);
 }
 let sharedRefreshFrame = null;
 function queueSharedRefresh() {
@@ -258,6 +259,7 @@ let moodList = loadJSON("fg_mood", []);
 let events = loadJSON("fg_events", []); // [{id,title,date,yearly}]
 let jarList = loadJSON("fg_jar", []);
 let daylines = loadJSON("fg_dayline", []);
+let promises = loadJSON("fg_promises", []); // 价值承诺：[{id,text,createdAt}] 无完成度、不可划勾，仅手动书写
 
 function effPlanDate(t) { return t.planDate || dayKey(t.createdAt); }
 function taskActionDate(t) {
@@ -305,8 +307,8 @@ function fmtRemind(ts) {
 }
 
 /* ================= 导航与 hash 路由 ================= */
-const PANEL_IDS = { today: "sec-today", calendar: "sec-calendar", tasks: "sec-tasks", tools: "sec-tools", notes: "sec-thoughts", space: "sec-space" };
-const PAGE_LABELS = { today: "今日", calendar: "日历", tasks: "任务", tools: "功能", notes: "思绪整理", space: "情绪空间" };
+const PANEL_IDS = { garden: "sec-garden", tarot: "sec-tarot", today: "sec-today", calendar: "sec-calendar", tasks: "sec-tasks", tools: "sec-tools", bench: "sec-bench", notes: "sec-thoughts", space: "sec-space" };
+const PAGE_LABELS = { garden: "花园", tarot: "每日塔罗", bench: "工作台", today: "今日", calendar: "日历", tasks: "任务", tools: "功能", notes: "思绪整理", space: "情绪空间" };
 const SUBS = ["notes", "todo", "timeline"];
 const navItems = document.querySelectorAll(".nav-item");
 const content = $("content");
@@ -334,6 +336,7 @@ function parseRoute() {
     location.replace("#notes/" + lastSub);
     return { panel: "notes", sub: lastSub };
   }
+  if (h.startsWith("garden/share/")) return { panel: "garden" };
   if (PANEL_IDS[h]) return { panel: h };
   location.replace("#today");
   return { panel: "today" };
@@ -342,13 +345,14 @@ function parseRoute() {
 function switchRoute() {
   const r = parseRoute();
   Object.entries(PANEL_IDS).forEach(([k, id]) => {
-    scrollMemo[k] = content.scrollTop;
+    if ($(id).classList.contains("active")) scrollMemo[k] = content.scrollTop;
     $(id).classList.toggle("active", k === r.panel);
   });
   navItems.forEach(b => b.classList.toggle("active", b.dataset.section === r.panel));
   const pageLocation = $("pageLocation");
   if (pageLocation) pageLocation.textContent = "我的花园 / " + PAGE_LABELS[r.panel];
   if (r.panel === "notes") renderSub(r.sub);
+  if (window.BotanyUI) window.BotanyUI.onRoute();
   if (r.panel === "calendar") renderCalendar();
   if (r.panel === "space") {
     renderWall();
@@ -502,8 +506,10 @@ goalInput.addEventListener("keydown", (e) => {
 
 function renderGoals() {
   goalCards.innerHTML = "";
-  if (!goals.find(g => g.id === selectedGoalId)) selectedGoalId = null;
-  goals.forEach(g => {
+  const active = goals.filter(g => !g.withdrawn);
+  const stones = goals.filter(g => g.withdrawn);
+  if (!goals.find(g => g.id === selectedGoalId && !g.withdrawn)) selectedGoalId = null;
+  active.forEach(g => {
     const card = document.createElement("div");
     card.className = "goal-card" + (g.id === selectedGoalId ? " selected" : "");
     const p = goalProgress(g);
@@ -515,7 +521,7 @@ function renderGoals() {
       ${p.nrTotal > 0 ? '<div class="g-bar"><i></i></div>' : ""}
       ${meta ? '<div class="g-meta"></div>' : ""}
       ${(g.date || (g.tags || []).length) ? '<div class="g-sub"></div>' : ""}
-      <button class="g-del">删除</button>`;
+      <div class="goal-card-actions"><button class="g-pause">先放一放</button><button class="g-del">删除</button></div>`;
     card.querySelector(".g-title").textContent = g.title;
     if (p.nrTotal > 0) card.querySelector(".g-bar i").style.width = Math.round(p.nrDone / p.nrTotal * 100) + "%";
     if (meta) card.querySelector(".g-meta").textContent = meta;
@@ -527,10 +533,11 @@ function renderGoals() {
       sub.textContent = bits.join(" · ");
     }
     card.addEventListener("click", (e) => {
-      if (e.target.closest(".g-del")) return;
+      if (e.target.closest(".g-del") || e.target.closest(".g-pause")) return;
       selectedGoalId = selectedGoalId === g.id ? null : g.id;
       renderGoals();
     });
+    card.querySelector(".g-pause").addEventListener("click", () => openGoalWithdraw(g));
     card.querySelector(".g-del").addEventListener("click", () => {
       const idx = goals.findIndex(x => x.id === g.id);
       const linkedIds = tasks.filter(t => t.goalId === g.id).map(t => t.id);
@@ -548,6 +555,110 @@ function renderGoals() {
     });
     goalCards.appendChild(card);
   });
+
+  /* 静石：撤回的长期目标，安静留在这里，不负面标记 */
+  const stoneWrap = $("stoneCards");
+  if (!stoneWrap) return;
+  stoneWrap.innerHTML = "";
+  stoneWrap.hidden = stones.length === 0;
+  stones.forEach(g => {
+    const card = document.createElement("div");
+    card.className = "stone-card";
+    card.innerHTML = `
+      <span class="stone-svg" aria-hidden="true"><svg viewBox="0 0 40 26"><ellipse cx="20" cy="16" rx="16" ry="8.5" fill="var(--bg-sub)" stroke="var(--line)"/><ellipse cx="24" cy="12" rx="8" ry="4.5" fill="var(--tint)" stroke="var(--line)" opacity=".7"/><path d="M14 14q3 2 6 1" stroke="var(--line)" fill="none" opacity=".8"/></svg></span>
+      <div class="stone-copy"><strong></strong><small></small></div>
+      <div class="stone-actions"><button class="quiet-link stone-reason">暂停理由</button><button class="quiet-link stone-resume">重新立起</button></div>`;
+    card.querySelector(".stone-copy strong").textContent = g.title;
+    card.querySelector(".stone-copy small").textContent =
+      g.withdrawnReason ? `「${g.withdrawnReason}」` : "先放一放，它还在这里等你";
+    card.querySelector(".stone-reason").addEventListener("click", () => {
+      openOverlay((c, close) => {
+        const t = document.createElement("div");
+        t.className = "ov-title"; t.textContent = "暂停的理由";
+        const p = document.createElement("p");
+        p.className = "leaf-dialog-hint";
+        p.textContent = g.withdrawnReason
+          ? `「${g.title}」先放一放：${g.withdrawnReason}`
+          : `「${g.title}」先放一放，没有写下理由。石头安静地待在花园里，等你想回来的时候。`;
+        const day = document.createElement("p");
+        day.className = "memory-meta";
+        day.textContent = `${dayKey(g.withdrawnAt)} 放下`;
+        const act = document.createElement("div");
+        act.className = "ov-actions";
+        const back = document.createElement("button");
+        back.className = "soft-btn mini"; back.textContent = "好，先这样";
+        back.addEventListener("click", close);
+        act.appendChild(back);
+        c.appendChild(t); c.appendChild(p); c.appendChild(day); c.appendChild(act);
+      });
+    });
+    card.querySelector(".stone-resume").addEventListener("click", () => {
+      g.withdrawn = false;
+      g.withdrawnReason = "";
+      g.withdrawnAt = null;
+      if (!saveJSON("fg_goals", goals)) return;
+      renderGoals(); renderTasksPage(); renderGardenStones();
+      showToast("目标重新立起来了，花园里的石头也松了口气");
+    });
+    stoneWrap.appendChild(card);
+  });
+}
+
+/* ================= 撤回目标：记录暂停理由，变为花园静石，不负面标记 ================= */
+function openGoalWithdraw(g) {
+  openOverlay((card, close) => {
+    const t = document.createElement("div");
+    t.className = "ov-title"; t.textContent = "先放一放？";
+    const hint = document.createElement("p");
+    hint.className = "leaf-dialog-hint";
+    hint.textContent = "这个目标会变成花园里的一枚静石，安静留着，不算放弃，也不会被扣掉什么。想回来的时候随时重新立起。";
+    const ta = document.createElement("textarea");
+    ta.className = "leaf-textarea";
+    ta.maxLength = 60; ta.rows = 2;
+    ta.placeholder = "想写一句暂停的理由吗（可不填）";
+    const act = document.createElement("div");
+    act.className = "ov-actions";
+    const ok = document.createElement("button");
+    ok.className = "soft-btn mini"; ok.textContent = "先放一放";
+    ok.addEventListener("click", () => {
+      g.withdrawn = true;
+      g.withdrawnReason = ta.value.trim();
+      g.withdrawnAt = Date.now();
+      if (!saveJSON("fg_goals", goals)) return;
+      if (selectedGoalId === g.id) selectedGoalId = null;
+      close();
+      renderGoals(); renderTasksPage(); renderGardenStones();
+      showToast("放好了。花园里多了一枚安静的石头");
+    });
+    const no = document.createElement("button");
+    no.className = "soft-btn mini ghost"; no.textContent = "再坚持一下";
+    no.addEventListener("click", close);
+    act.appendChild(ok); act.appendChild(no);
+    card.appendChild(t); card.appendChild(hint); card.appendChild(ta); card.appendChild(act);
+    setTimeout(() => ta.focus(), 50);
+  });
+}
+
+/* 花园里的静石区：仅展示，无删除 */
+function renderGardenStones() {
+  const row = $("stoneRow");
+  if (!row) return;
+  row.replaceChildren();
+  const section = row.closest(".garden-stones");
+  const stones = goals.filter(g => g.withdrawn);
+  if (section) section.hidden = stones.length === 0;
+  stones.forEach(g => {
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "garden-stone";
+    item.title = g.withdrawnReason ? `暂停理由：${g.withdrawnReason}` : "先放一放的目标，安静留在这里";
+    item.innerHTML = `<span class="garden-stone-svg" aria-hidden="true"><svg viewBox="0 0 40 26"><ellipse cx="20" cy="16" rx="16" ry="8.5" fill="var(--bg-sub)" stroke="var(--line)"/><ellipse cx="24" cy="12" rx="8" ry="4.5" fill="var(--tint)" stroke="var(--line)" opacity=".7"/><path d="M14 14q3 2 6 1" stroke="var(--line)" fill="none" opacity=".8"/></svg></span><small></small>`;
+    item.querySelector("small").textContent = g.title;
+    item.addEventListener("click", () => {
+      showToast(g.withdrawnReason ? `暂停理由：${g.withdrawnReason}` : "先放一放的目标，等你想回来的时候它还在");
+    });
+    row.appendChild(item);
+  });
 }
 
 function goalProgress(g) {
@@ -560,6 +671,62 @@ function goalProgress(g) {
     repeatDays: rep.reduce((s, t) => s + (t.doneDates || []).length, 0)
   };
 }
+
+/* ================= 价值承诺：无完成度、不可划勾，仅手动书写，用来校准重心 ================= */
+function savePromises() { return saveJSON("fg_promises", promises); }
+
+function renderPromises() {
+  const list = $("promiseList");
+  if (!list) return;
+  list.innerHTML = "";
+  if (!promises.length) {
+    const p = document.createElement("p");
+    p.className = "promise-empty";
+    p.textContent = "还没有写下承诺。它可以很小，只要是你自己想说的。";
+    list.appendChild(p);
+    return;
+  }
+  promises.slice().sort((a, b) => b.createdAt - a.createdAt).forEach(pr => {
+    const row = document.createElement("div");
+    row.className = "promise-item";
+    const txt = document.createElement("span");
+    txt.className = "promise-text";
+    txt.textContent = pr.text;
+    const date = document.createElement("small");
+    date.className = "promise-date";
+    date.textContent = dayKey(pr.createdAt);
+    const drop = document.createElement("button");
+    drop.className = "quiet-link promise-drop";
+    drop.textContent = "轻轻放下";
+    drop.addEventListener("click", () => {
+      const idx = promises.findIndex(x => x.id === pr.id);
+      const removed = promises.splice(idx, 1)[0];
+      if (!savePromises()) return;
+      renderPromises();
+      showSnackbar("已放下这句承诺", () => {
+        promises.splice(Math.min(idx, promises.length), 0, removed);
+        savePromises();
+        renderPromises();
+      });
+    });
+    row.appendChild(txt); row.appendChild(date); row.appendChild(drop);
+    list.appendChild(row);
+  });
+}
+
+$("promiseAdd").addEventListener("click", addPromise);
+$("promiseInput").addEventListener("keydown", (e) => { if (e.key === "Enter") addPromise(); });
+function addPromise() {
+  const inp = $("promiseInput");
+  const text = inp.value.trim();
+  if (!text) return;
+  promises.push({ id: uid("pr"), text, createdAt: Date.now() });
+  if (!savePromises()) return;
+  inp.value = "";
+  renderPromises();
+  showToast("记下了。它会安静待在这里，不催你完成");
+}
+
 
 /* 日历右下角：设立目标（名 / 日期 / 标签） */
 $("calGoalBtn").addEventListener("click", () => {
@@ -594,6 +761,24 @@ $("calGoalBtn").addEventListener("click", () => {
 
     rows.appendChild(dateBtn); rows.appendChild(tagInp);
 
+    // 写给未来 · 时光信（可选，不影响目标本身）
+    const budWrap = document.createElement("div");
+    budWrap.className = "bud-fields";
+    const budLbl = document.createElement("div");
+    budLbl.className = "bud-fields-label";
+    budLbl.textContent = "写给未来的自己 · 时光信（可选）";
+    const budDate = document.createElement("input");
+    budDate.type = "date";
+    budDate.className = "ed-field bud-unlock-date";
+    budDate.min = dayKey(Date.now() + DAY);
+    budDate.setAttribute("aria-label", "时光信解锁日期");
+    const budText = document.createElement("textarea");
+    budText.className = "bud-letter-text";
+    budText.maxLength = 160;
+    budText.rows = 2;
+    budText.placeholder = "到时候想对自己说的话（可不填）";
+    budWrap.appendChild(budLbl); budWrap.appendChild(budDate); budWrap.appendChild(budText);
+
     const act = document.createElement("div");
     act.className = "ov-actions";
     const ok = document.createElement("button");
@@ -601,12 +786,20 @@ $("calGoalBtn").addEventListener("click", () => {
     ok.addEventListener("click", () => {
       const v = inp.value.trim();
       if (!v) return;
+      const budDateVal = budDate.value;
+      if (budDateVal && budDateVal <= todayKey()) {
+        showToast("时光信要写给未来的日子，换一天试试"); return;
+      }
+      const gid = uid("g");
       goals.push({
-        id: uid("g"), title: v, createdAt: Date.now(),
+        id: gid, title: v, createdAt: Date.now(),
         date: curDate,
         tags: tagInp.value.trim() ? tagInp.value.split(/[,，]/).map(s => s.trim()).filter(Boolean) : []
       });
       if (!saveJSON("fg_goals", goals)) return;
+      if (budDateVal && window.GardenLetters && typeof window.GardenLetters.create === "function") {
+        window.GardenLetters.create({ goalId: gid, text: budText.value.trim(), unlockDate: budDateVal });
+      }
       renderGoals(); renderTasksPage(); renderDateStrip(); renderCalendar();
       showToast("目标立好了");
       close();
@@ -615,7 +808,7 @@ $("calGoalBtn").addEventListener("click", () => {
     no.className = "soft-btn mini ghost"; no.textContent = "先想想";
     no.addEventListener("click", close);
     act.appendChild(ok); act.appendChild(no);
-    card.appendChild(t); card.appendChild(inp); card.appendChild(rows); card.appendChild(act);
+    card.appendChild(t); card.appendChild(inp); card.appendChild(rows); card.appendChild(budWrap); card.appendChild(act);
     inp.addEventListener("keydown", (e) => { if (e.key === "Enter") ok.click(); });
     setTimeout(() => inp.focus(), 50);
   });
@@ -1810,6 +2003,7 @@ function renderEvents() {
 const POMO_FOCUS = 25 * 60 * 1000, POMO_BREAK = 5 * 60 * 1000;
 let pomo = loadJSON("fg_pomo", { date: null, rounds: 0, mode: "focus", left: POMO_FOCUS, focusMs: POMO_FOCUS, running: false, endTs: null });
 if (!pomo.focusMs) pomo.focusMs = POMO_FOCUS;
+if (pomo.demoRun) { pomo.demoRun = false; if (pomo.running) { pomo.running = false; pomo.endTs = null; pomo.mode = "focus"; pomo.left = pomo.focusMs; } } // 刷新后清掉试用演示态
 
 function ensurePomoDay() {
   const date = todayKey();
@@ -1934,6 +2128,7 @@ function renderPomo() {
       }
       pomo.endTs = Date.now() + pomo.left;
       pomo.running = true;
+      if (window.GardenCards) window.GardenCards.earnChance("focus");
     }
     if (!saveJSON("fg_pomo", pomo)) return;
     renderPomo();
@@ -1955,6 +2150,26 @@ function renderPomo() {
   rounds.className = "pomo-rounds";
   rounds.textContent = pomo.rounds > 0 ? "今天收了 " + pomo.rounds + " 颗番茄" : "收几颗都好，一颗也算数";
   box.appendChild(rounds);
+  // 试用：10 秒版（体验引导，结束后不写专注记录）
+  if (!pomo.running && !pomo.pendingSave && !pomo.sessionId && !pomo.demoRun) {
+    const demo = document.createElement("button");
+    demo.type = "button";
+    demo.className = "quiet-link pomo-demo-link";
+    demo.textContent = "试用：10 秒版";
+    demo.title = "体验引导：跑一个 10 秒的演示，不会记录成真实专注";
+    demo.addEventListener("click", () => {
+      if (pomo.running || pomo.pendingSave) return;
+      pomo.demoRun = true;
+      pomo.mode = "focus";
+      pomo.left = 10000;
+      pomo.endTs = Date.now() + 10000;
+      pomo.running = true;
+      saveJSON("fg_pomo", pomo);
+      renderPomo();
+      showToast("试用演示 · 10 秒版开始了，不会记录真实数据");
+    });
+    box.appendChild(demo);
+  }
   if (typeof renderFocusContext === "function") renderFocusContext();
 }
 function setPomoMinutes(min) {
@@ -1971,6 +2186,16 @@ setInterval(() => {
   ensurePomoDay();
   const left = pomoLeft();
   if (left <= 0) {
+    if (pomo.demoRun) { // 试用演示：只响提示音，不落任何记录
+      pomo.demoRun = false;
+      pomo.mode = "focus"; pomo.left = pomo.focusMs;
+      pomo.running = false; pomo.endTs = null;
+      saveJSON("fg_pomo", pomo);
+      playChime();
+      showToast("试用演示结束。真实的一段时间，随时可以开始");
+      renderPomo();
+      return;
+    }
     if (pomo.mode === "focus") {
       settleFocus();
     } else {
@@ -2060,9 +2285,7 @@ noteInput.addEventListener("keydown", (e) => {
   renderNotes();
 });
 
-/* AI 占位按钮：只做提示，不调任何接口 */
-$("aiTaskBtn").addEventListener("click", () => showToast("AI 模块为后续迭代功能"));
-$("aiMapBtn").addEventListener("click", () => showToast("AI 模块为后续迭代功能"));
+/* AI 入口已接入 MCP 插件体系（js/mcp-ui.js），此处不再占位 */
 
 function renderNotes() {
   noteList.innerHTML = "";
@@ -2184,6 +2407,7 @@ jarDropBtn.addEventListener("click", () => {
   if (!v) return;
   jarList.push({ id: uid("j"), text: v, date: todayKey(), createdAt: Date.now() });
   if (!saveJSON("fg_jar", jarList)) return;
+  if (window.GardenCards) window.GardenCards.earnChance("jar");
   renderJar();
   showToast("投进罐子里了");
 });
@@ -2274,8 +2498,6 @@ function openTodoEditor(td) {
 
 /* ================= 任务页：按目标整理 ================= */
 function renderTasksPage() {
-  const hint = $("tasksHint");
-  hint.hidden = goals.length > 0;
   const host = $("goalGroups");
   host.innerHTML = "";
 
@@ -2284,9 +2506,11 @@ function renderTasksPage() {
   if (loose.length) groups.push({ goal: null, list: loose });
 
   if (groups.length === 0) {
-    const tip = document.createElement("p");
-    tip.className = "wall-empty";
-    tip.textContent = "还没有任务。去今日页写下第一件想做的事吧。";
+    const tip = document.createElement("div");
+    tip.className = "tasks-empty";
+    tip.innerHTML = `
+      <span class="tasks-empty-icon" aria-hidden="true"><svg viewBox="0 0 48 40"><path d="M24 27V13" stroke="var(--accent)" stroke-opacity=".55" fill="none" stroke-linecap="round"/><path d="M24 15c.4-5.5 3.5-8.6 9-9.6-.7 5.6-3.6 8.8-9 9.6Z" fill="var(--tint)" stroke="var(--accent)" stroke-opacity=".5"/><path d="M24 20c-.4-4.4-2.8-7-7.2-8 .6 4.5 2.9 7.2 7.2 8Z" fill="var(--bg-sub)" stroke="var(--accent)" stroke-opacity=".4"/><path d="M15 27h18l-1.8 9H16.8Z" fill="var(--tint)" stroke="var(--accent)" stroke-opacity=".5"/></svg></span>
+      <p>暂无任务。点击上方输入框添加你的第一件事。</p>`;
     host.appendChild(tip);
     return;
   }
@@ -2481,6 +2705,7 @@ function renderMood() {
   MOOD_LABELS.forEach((label, i) => {
     const btn = document.createElement("button");
     btn.className = "mood-opt";
+    btn.dataset.mood = String(i);
     const mouths = ['M7 16q5 8 10 0Z','M7 17q5 6 10 0','M8 19h8','M8 19q4-3 8 0','M7 21q5-7 10 0'];
     const eyes = i < 3 ? '<path d="M7 11h1m8 0h1"/>' : '<path d="m6 10 3 2m6 0 3-2"/>';
     btn.innerHTML = `<div class="mood-dot"><svg viewBox="0 0 24 28" class="mood-face" aria-hidden="true">${eyes}<path d="${mouths[i]}"/></svg></div><div class="mood-label"></div>`;
@@ -2512,6 +2737,7 @@ function setMood(i) {
     moodList.push(cur);
   }
   if (!saveJSON("fg_mood", moodList)) return;
+  if (window.GardenCards) window.GardenCards.earnChance("mood");
   renderMood();
   renderCalendar();
 }
@@ -2811,6 +3037,7 @@ function dropJar() {
   if (!v) return;
   jarList.push({ id: uid("j"), text: v, date: todayKey(), createdAt: Date.now() });
   if (!saveJSON("fg_jar", jarList)) return;
+  if (window.GardenCards) window.GardenCards.earnChance("jar");
   renderJar();
   jarInput.value = "";
   const rise = document.createElement("div");
@@ -2927,9 +3154,14 @@ function renderPool() {
 }
 
 /* ================= 导出与导入备份 ================= */
-async function buildBackup() {
+async function buildBackup(skipGardenWait=false) {
+  if(window.BotanyUI && !skipGardenWait) await window.BotanyUI.flush();
+  const extraKeys=["fg_settings","fg_leaves","fg_letters","fg_cards","fg_cards_meta","fg_bench","fg_shelves","fg_review_items","fg_promises","fg_whitenoise"];
+  const extras=Object.fromEntries(extraKeys.map(k=>[k,loadJSON(k,null)]));
   return {version:4, exportedAt:new Date().toISOString(), tasks,todos,notes,goals,
     preferences:{palette:window.GardenPalette.choice()},
+    garden:window.BotanyUI?window.BotanyUI.exportState():undefined,
+    tarot:window.BotanyUI?window.BotanyUI.exportTarot():undefined,extras,
     mood:moodList,events,jar:jarList,dayline:daylines,templates,quadrant,focus:focusSessions,
     bg:localStorage.getItem("fg_bg") || null, petImg:localStorage.getItem("fg_pet_img") || null,
     photos:await idbAll()};
@@ -3028,13 +3260,17 @@ async function replacePhotos(photos, recovery) {
     tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error); tx.onabort=()=>reject(tx.error || new Error("照片恢复中断"));
   });
 }
-async function applyImport(raw) {
+async function applyImport(raw, gardenLocked=false) {
+  if(!gardenLocked && navigator.locks) return navigator.locks.request("fg-garden-state",()=>applyImport(raw,true));
   const data=GardenCore.normalizeBackup(raw);
-  const previous=await buildBackup();
+  const previous=await buildBackup(true);
   const fields={fg_tasks:data.tasks,fg_todos:data.todos,fg_notes:data.notes,fg_goals:data.goals,
     fg_mood:data.mood,fg_events:data.events,fg_jar:data.jar,fg_dayline:data.dayline,
     fg_templates:data.templates.length ? data.templates : TPL_DEFAULT,fg_quadrant:data.quadrant,
     fg_focus_sessions:data.focus,fg_pomo:{date:todayKey(),rounds:0,mode:"focus",left:POMO_FOCUS,focusMs:POMO_FOCUS,running:false,endTs:null}};
+  if(data.garden) fields.fg_garden_v1=data.garden;
+  if(data.tarot) fields.fg_tarot_v1=data.tarot;
+  if(data.extras) Object.assign(fields,data.extras);
   if(data.preferences) fields.fg_appearance=data.preferences.palette;
   const keys=[...Object.keys(fields),"fg_bg","fg_pet_img"];
   const original=Object.fromEntries(keys.map(k=>[k,localStorage.getItem(k)]));
@@ -3052,6 +3288,9 @@ async function applyImport(raw) {
   events=data.events; jarList=data.jar; daylines=data.dayline; templates=fields.fg_templates;
   quadrant=data.quadrant; focusSessions=data.focus; photosCache=data.photos; pomo=fields.fg_pomo;
   Object.keys(fields).forEach(readStored);
+  promises=loadJSON("fg_promises",[]);
+  window.dispatchEvent(new CustomEvent("fg-data-restored"));
+  if(window.BotanyUI) window.BotanyUI.reload();
   window.GardenPalette.apply(); applyMoodBg(); renderPet(); renderAll();
   if(typeof renderGrowth==="function") renderGrowth();
   showToast("备份已导入；原数据恢复点已保存");
@@ -3145,8 +3384,19 @@ function petGreet() {
   el.textContent = goals.length > 0
     ? "今天也要准备「" + goals[0].title + "」哦"
     : "今天也慢慢来就好";
+  const close = document.createElement("button");
+  close.className = "bubble-close";
+  close.textContent = "×";
+  close.setAttribute("aria-label", "关闭提醒");
+  close.addEventListener("click", () => {
+    if (greetTimer) { clearTimeout(greetTimer); greetTimer = null; }
+    el.remove();
+    if (bubbleEl === el) bubbleEl = null;
+  });
+  el.appendChild(close);
   document.body.appendChild(el);
-  greetTimer = setTimeout(() => el.remove(), 6500);
+  bubbleEl = el;
+  greetTimer = setTimeout(() => { el.remove(); if (bubbleEl === el) bubbleEl = null; }, 6500);
 }
 
 /* ================= 艾宾浩斯柔和复习提醒（保留自 v3） ================= */
@@ -3203,12 +3453,20 @@ function nextBubble() {
   actions.appendChild(ok);
   actions.appendChild(skip);
   bubbleEl.appendChild(actions);
+  const close = document.createElement("button");
+  close.className = "bubble-close";
+  close.textContent = "×";
+  close.setAttribute("aria-label", "关闭提醒");
+  close.addEventListener("click", () => { bubbleEl.remove(); bubbleEl = null; });
+  bubbleEl.appendChild(close);
   document.body.appendChild(bubbleEl);
 }
 
 /* ================= 初始化 ================= */
 function renderAll() {
   renderGoals();
+  renderGardenStones();
+  renderPromises();
   renderDateStrip();
   renderToday();
   renderTasksPage();
@@ -3231,7 +3489,7 @@ function renderAll() {
 /* ================= 跟手涟漪：以点击坐标为圆心扩散 ================= */
 document.addEventListener("pointerdown", (e) => {
   const btn = e.target.closest("button");
-  if (!btn) return;
+  if (!btn || btn.classList.contains("pref-switch")) return;   // 开关不用水波纹，走专属玻璃扫光
   const rect = btn.getBoundingClientRect();
   const d = rect.width * 2.4;
   const r = document.createElement("span");

@@ -8,7 +8,7 @@
     {id:'lavender',name:'暮色浅紫',note:'把声音调轻一点',colors:['#c6b8d9','#f7f3fa','#75618f']},
     {id:'sage',name:'窗边草绿',note:'熟悉的自然与生长',colors:['#b9cbaa','#f5f7f0','#4f6e46']}
   ];
-  const defaults = {today:'almond',calendar:'mist',tasks:'sage',tools:'mist',notes:'almond',space:'lavender'};
+  const defaults = {garden:'sage',tarot:'lavender',bench:'mist',today:'almond',calendar:'mist',tasks:'sage',tools:'mist',notes:'almond',space:'lavender'};
   function choice() {
     try { const value=JSON.parse(localStorage.getItem('fg_appearance'));return options.some(p=>p.id===value)?value:'auto'; }
     catch { return 'auto'; }
